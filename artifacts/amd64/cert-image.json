@@ -1,0 +1,162 @@
+{
+    "certified": false,
+    "deleted": false,
+    "docker_image_digest": "sha256:44d26a13a516893067f993e33c09fe774fc4720065a60b846bf4ee7d6cef65bf",
+    "docker_image_id": "sha256:77d04e0bca6bb0080e1c09412fbf07cfd69440d254f80c43436e5cac0e42a294",
+    "image_id": "sha256:44d26a13a516893067f993e33c09fe774fc4720065a60b846bf4ee7d6cef65bf",
+    "parsed_data": {
+        "architecture": "amd64",
+        "created": "2025-03-18 16:00:45.96113307 +0000 UTC",
+        "image_id": "sha256:44d26a13a516893067f993e33c09fe774fc4720065a60b846bf4ee7d6cef65bf",
+        "labels": [
+            {
+                "name": "io.k8s.display-name",
+                "value": "Red Hat Universal Base Image 8 Minimal"
+            },
+            {
+                "name": "io.openshift.tags",
+                "value": "minimal rhel8"
+            },
+            {
+                "name": "revision",
+                "value": "4ec9e11cca3e2665374749dc967c84b03397a9cd"
+            },
+            {
+                "name": "com.redhat.license_terms",
+                "value": "https://www.redhat.com/en/about/red-hat-end-user-license-agreements#UBI"
+            },
+            {
+                "name": "description",
+                "value": "MariaDB MaxScale is a database proxy that extends the high availability, scalability, and security of MariaDB Server"
+            },
+            {
+                "name": "maintainer",
+                "value": "\"docker-maintainers@mariadb.com\""
+            },
+            {
+                "name": "io.k8s.description",
+                "value": "The Universal Base Image Minimal is a stripped down image that uses microdnf as a package manager. This base image is freely redistributable, but Red Hat only supports Red Hat technologies through subscriptions for Red Hat products. This image is maintained by Red Hat and updated regularly."
+            },
+            {
+                "name": "io.openshift.expose-services",
+                "value": ""
+            },
+            {
+                "name": "vcs-ref",
+                "value": "4f8da2b64a13f2a264bd802d8909bf803211fb20"
+            },
+            {
+                "name": "vcs-type",
+                "value": "git"
+            },
+            {
+                "name": "vendor",
+                "value": "\"MariaDB, plc\""
+            },
+            {
+                "name": "architecture",
+                "value": "x86_64"
+            },
+            {
+                "name": "summary",
+                "value": "\"MariaDB MaxScale database proxy\""
+            },
+            {
+                "name": "distribution-scope",
+                "value": "public"
+            },
+            {
+                "name": "io.buildah.version",
+                "value": "1.33.12"
+            },
+            {
+                "name": "name",
+                "value": "MariaDB MaxScale"
+            },
+            {
+                "name": "release",
+                "value": "24.02.5"
+            },
+            {
+                "name": "source",
+                "value": "https://github.com/mariadb-corporation/maxscale-docker"
+            },
+            {
+                "name": "url",
+                "value": "https://github.com/mariadb-corporation/maxscale-docker"
+            },
+            {
+                "name": "build-date",
+                "value": "2025-03-12T16:07:39"
+            },
+            {
+                "name": "com.redhat.component",
+                "value": "ubi8-minimal-container"
+            },
+            {
+                "name": "version",
+                "value": "24.02.5"
+            }
+        ],
+        "layers": [
+            "sha256:6eebbc5dc79bf3abdcc431ac042a9f754151b8daebe3aea4fe0db5e28524cebd",
+            "sha256:03dde7a83b36b4be7ea2877a426f67625ca57735325c07b82f18fa9dfd418545",
+            "sha256:4b6d6b97203daafcba2114f7308419726407cc2cbe9ce1b63cd6da1a3afbc808",
+            "sha256:bf3b31f232c93b8b23ff75d2c27b7ac1836552daef4284320dffc600b4d8d284",
+            "sha256:063ccb62350b730728d9324b4e5ed6d9cafd6dc2766a244b3ff3031f2535e98f",
+            "sha256:a0d379159cf8edc7cb3d03fa9fdcc96c7894d441e7659be5cfd966d44b68311b",
+            "sha256:b525fcb208cefd773edab2df3a3182d978033bff8d70f738eed8216934a58628"
+        ],
+        "os": "linux",
+        "size": 1623,
+        "uncompressed_layer_sizes": [
+            {
+                "layer_id": "sha256:12e07a966416cf5720abd57b88d3140e7e21a8bf28ec8eccce154762f050aad6",
+                "size_bytes": 94107648
+            },
+            {
+                "layer_id": "sha256:c3c43a65895b17e641f8fd240398aba678993baf10e032a48ee46ea9fa256d1a",
+                "size_bytes": 38912
+            },
+            {
+                "layer_id": "sha256:f0ee1b4fd7762beded9df0eb693cec0173e6821266a6f7c03090b868b443e44c",
+                "size_bytes": 6930432
+            },
+            {
+                "layer_id": "sha256:d2e676140cf2a796093ed82512b7db68dae33799feb7a0594495a56722ab7acc",
+                "size_bytes": 455916032
+            },
+            {
+                "layer_id": "sha256:2b826f239412ee76de5d6d65963f56b7c45c570d3bc19c9b9694770eb34a82da",
+                "size_bytes": 2560
+            },
+            {
+                "layer_id": "sha256:afd286e47e809ee761abfa94a9673eedc97784471b201709ee45c4a179e6cbbd",
+                "size_bytes": 7168
+            },
+            {
+                "layer_id": "sha256:e240af54932e252982f01bdab7af7e6ca0fcd0611d3ba059af4826488df32e5a",
+                "size_bytes": 15360
+            }
+        ]
+    },
+    "architecture": "amd64",
+    "raw_config": "{\"architecture\":\"amd64\",\"config\":{\"User\":\"maxscale\",\"ExposedPorts\":{\"8989/tcp\":{}},\"Env\":[\"PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin\",\"container=oci\"],\"Entrypoint\":[\"maxscale\",\"--nodaemon\",\"--log=stdout\"],\"Labels\":{\"architecture\":\"x86_64\",\"build-date\":\"2025-03-12T16:07:39\",\"com.redhat.component\":\"ubi8-minimal-container\",\"com.redhat.license_terms\":\"https://www.redhat.com/en/about/red-hat-end-user-license-agreements#UBI\",\"description\":\"MariaDB MaxScale is a database proxy that extends the high availability, scalability, and security of MariaDB Server\",\"distribution-scope\":\"public\",\"io.buildah.version\":\"1.33.12\",\"io.k8s.description\":\"The Universal Base Image Minimal is a stripped down image that uses microdnf as a package manager. This base image is freely redistributable, but Red Hat only supports Red Hat technologies through subscriptions for Red Hat products. This image is maintained by Red Hat and updated regularly.\",\"io.k8s.display-name\":\"Red Hat Universal Base Image 8 Minimal\",\"io.openshift.expose-services\":\"\",\"io.openshift.tags\":\"minimal rhel8\",\"maintainer\":\"\\\"docker-maintainers@mariadb.com\\\"\",\"name\":\"MariaDB MaxScale\",\"release\":\"24.02.5\",\"revision\":\"4ec9e11cca3e2665374749dc967c84b03397a9cd\",\"source\":\"https://github.com/mariadb-corporation/maxscale-docker\",\"summary\":\"\\\"MariaDB MaxScale database proxy\\\"\",\"url\":\"https://github.com/mariadb-corporation/maxscale-docker\",\"vcs-ref\":\"4f8da2b64a13f2a264bd802d8909bf803211fb20\",\"vcs-type\":\"git\",\"vendor\":\"\\\"MariaDB, plc\\\"\",\"version\":\"24.02.5\"}},\"created\":\"2025-03-18T16:00:45.96113307Z\",\"history\":[{\"created\":\"2025-03-12T16:21:16.264272522Z\",\"created_by\":\"/bin/sh -c #(nop) ADD file:e91f15cb37128db9411fc4c3c60cb07f1123cb3992a826271782e229dcac72b5 in / \",\"empty_layer\":true},{\"created\":\"2025-03-12T16:21:16.73344634Z\",\"created_by\":\"/bin/sh -c mv -f /etc/yum.repos.d/ubi.repo /tmp || :\",\"empty_layer\":true},{\"created\":\"2025-03-12T16:21:16.892495793Z\",\"created_by\":\"/bin/sh -c #(nop) ADD file:df13b6a4fdeac4626ab7cd7e99d16d30edc6e3e5441295ae7691bee26604a5b1 in /tmp/tls-ca-bundle.pem \",\"empty_layer\":true},{\"created\":\"2025-03-12T16:21:17.076026572Z\",\"created_by\":\"/bin/sh -c #(nop) ADD multi:e0ee9e4bb99345968cb6262a2bb8d783f52fcdf781215a0fb9b33720079b9220 in /etc/yum.repos.d/ \",\"empty_layer\":true},{\"created\":\"2025-03-12T16:21:17.076065356Z\",\"created_by\":\"/bin/sh -c #(nop) LABEL maintainer=\\\"Red Hat, Inc.\\\"\",\"empty_layer\":true},{\"created\":\"2025-03-12T16:21:17.076139599Z\",\"created_by\":\"/bin/sh -c #(nop) LABEL com.redhat.component=\\\"ubi8-minimal-container\\\"       name=\\\"ubi8-minimal\\\"       version=\\\"8.10\\\"\",\"empty_layer\":true},{\"created\":\"2025-03-12T16:21:17.076180808Z\",\"created_by\":\"/bin/sh -c #(nop) LABEL com.redhat.license_terms=\\\"https://www.redhat.com/en/about/red-hat-end-user-license-agreements#UBI\\\"\",\"empty_layer\":true},{\"created\":\"2025-03-12T16:21:17.076210285Z\",\"created_by\":\"/bin/sh -c #(nop) LABEL summary=\\\"Provides the latest release of the minimal Red Hat Universal Base Image 8.\\\"\",\"empty_layer\":true},{\"created\":\"2025-03-12T16:21:17.076268313Z\",\"created_by\":\"/bin/sh -c #(nop) LABEL description=\\\"The Universal Base Image Minimal is a stripped down image that uses microdnf as a package manager. This base image is freely redistributable, but Red Hat only supports Red Hat technologies through subscriptions for Red Hat products. This image is maintained by Red Hat and updated regularly.\\\"\",\"empty_layer\":true},{\"created\":\"2025-03-12T16:21:17.076299143Z\",\"created_by\":\"/bin/sh -c #(nop) LABEL io.k8s.display-name=\\\"Red Hat Universal Base Image 8 Minimal\\\"\",\"empty_layer\":true},{\"created\":\"2025-03-12T16:21:17.076312416Z\",\"created_by\":\"/bin/sh -c #(nop) LABEL io.openshift.expose-services=\\\"\\\"\",\"empty_layer\":true},{\"created\":\"2025-03-12T16:21:17.076339006Z\",\"created_by\":\"/bin/sh -c #(nop) LABEL io.openshift.tags=\\\"minimal rhel8\\\"\",\"empty_layer\":true},{\"created\":\"2025-03-12T16:21:17.076364516Z\",\"created_by\":\"/bin/sh -c #(nop) ENV container oci\",\"empty_layer\":true},{\"created\":\"2025-03-12T16:21:17.076420623Z\",\"created_by\":\"/bin/sh -c #(nop) ENV PATH /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin\",\"empty_layer\":true},{\"created\":\"2025-03-12T16:21:17.076426229Z\",\"created_by\":\"/bin/sh -c #(nop) CMD [\\\"/bin/bash\\\"]\",\"empty_layer\":true},{\"created\":\"2025-03-12T16:21:17.510693452Z\",\"created_by\":\"/bin/sh -c rm -rf /var/log/*\",\"empty_layer\":true},{\"created\":\"2025-03-12T16:21:17.654043589Z\",\"created_by\":\"/bin/sh -c #(nop) ADD file:7e17f57c26ef89e2b3be4331b0354cc05cde89b3de0c3624ad48c95028d055f1 in /root/buildinfo/content_manifests/ubi8-minimal-container-8.10-1179.1741795396.json \",\"empty_layer\":true},{\"created\":\"2025-03-12T16:21:17.798380244Z\",\"created_by\":\"/bin/sh -c #(nop) ADD file:0d37e6e9d692f568915dbcc9b03a12afb557fdf5db54b04ffcd3b1cd21ded181 in /root/buildinfo/Dockerfile-ubi8-minimal-8.10-1179.1741795396 \",\"empty_layer\":true},{\"created\":\"2025-03-12T16:21:17.798546052Z\",\"created_by\":\"/bin/sh -c #(nop) LABEL \\\"release\\\"=\\\"1179.1741795396\\\" \\\"distribution-scope\\\"=\\\"public\\\" \\\"vendor\\\"=\\\"Red Hat, Inc.\\\" \\\"build-date\\\"=\\\"2025-03-12T16:07:39\\\" \\\"architecture\\\"=\\\"x86_64\\\" \\\"vcs-type\\\"=\\\"git\\\" \\\"vcs-ref\\\"=\\\"4f8da2b64a13f2a264bd802d8909bf803211fb20\\\" \\\"io.k8s.description\\\"=\\\"The Universal Base Image Minimal is a stripped down image that uses microdnf as a package manager. This base image is freely redistributable, but Red Hat only supports Red Hat technologies through subscriptions for Red Hat products. This image is maintained by Red Hat and updated regularly.\\\" \\\"url\\\"=\\\"https://access.redhat.com/containers/#/registry.access.redhat.com/ubi8-minimal/images/8.10-1179.1741795396\\\"\",\"empty_layer\":true},{\"created\":\"2025-03-12T16:21:18.246854664Z\",\"created_by\":\"/bin/sh -c rm -f '/etc/yum.repos.d/odcs-3974823-c7e71.repo' '/etc/yum.repos.d/rhel-8.10-compose-0e878.repo'\",\"empty_layer\":true},{\"created\":\"2025-03-12T16:21:18.709533731Z\",\"created_by\":\"/bin/sh -c rm -f /tmp/tls-ca-bundle.pem\",\"empty_layer\":true},{\"created\":\"2025-03-12T16:21:19.585961424Z\",\"created_by\":\"/bin/sh -c mv -fZ /tmp/ubi.repo /etc/yum.repos.d/ubi.repo || :\"},{\"created\":\"2025-03-18T16:00:27.980000484Z\",\"created_by\":\"ARG MXS_VERSION=24.02.5\",\"comment\":\"buildkit.dockerfile.v0\",\"empty_layer\":true},{\"created\":\"2025-03-18T16:00:27.980000484Z\",\"created_by\":\"COPY --chmod=500 mariadb_repo_setup /tmp/mariadb_repo_setup # buildkit\",\"comment\":\"buildkit.dockerfile.v0\"},{\"created\":\"2025-03-18T16:00:29.28872426Z\",\"created_by\":\"RUN |1 MXS_VERSION=24.02.5 /bin/sh -c /tmp/mariadb_repo_setup --mariadb-maxscale-version=${MXS_VERSION} --skip-check-installed # buildkit\",\"comment\":\"buildkit.dockerfile.v0\"},{\"created\":\"2025-03-18T16:00:45.833470541Z\",\"created_by\":\"RUN |1 MXS_VERSION=24.02.5 /bin/sh -c microdnf -y install maxscale shadow-utils \\u0026\\u0026 microdnf clean all # buildkit\",\"comment\":\"buildkit.dockerfile.v0\"},{\"created\":\"2025-03-18T16:00:45.873146477Z\",\"created_by\":\"COPY maxscale.cnf /etc/ # buildkit\",\"comment\":\"buildkit.dockerfile.v0\"},{\"created\":\"2025-03-18T16:00:45.882858348Z\",\"created_by\":\"COPY LICENSE /licenses/ # buildkit\",\"comment\":\"buildkit.dockerfile.v0\"},{\"created\":\"2025-03-18T16:00:45.882858348Z\",\"created_by\":\"EXPOSE map[8989/tcp:{}]\",\"comment\":\"buildkit.dockerfile.v0\",\"empty_layer\":true},{\"created\":\"2025-03-18T16:00:45.96113307Z\",\"created_by\":\"RUN |1 MXS_VERSION=24.02.5 /bin/sh -c useradd -r maxscale \\u0026\\u0026   chown maxscale:maxscale /var/{lib,run,log,cache}/maxscale # buildkit\",\"comment\":\"buildkit.dockerfile.v0\"},{\"created\":\"2025-03-18T16:00:45.96113307Z\",\"created_by\":\"USER maxscale\",\"comment\":\"buildkit.dockerfile.v0\",\"empty_layer\":true},{\"created\":\"2025-03-18T16:00:45.96113307Z\",\"created_by\":\"ENTRYPOINT [\\\"maxscale\\\" \\\"--nodaemon\\\" \\\"--log=stdout\\\"]\",\"comment\":\"buildkit.dockerfile.v0\",\"empty_layer\":true}],\"os\":\"linux\",\"rootfs\":{\"type\":\"layers\",\"diff_ids\":[\"sha256:12e07a966416cf5720abd57b88d3140e7e21a8bf28ec8eccce154762f050aad6\",\"sha256:c3c43a65895b17e641f8fd240398aba678993baf10e032a48ee46ea9fa256d1a\",\"sha256:f0ee1b4fd7762beded9df0eb693cec0173e6821266a6f7c03090b868b443e44c\",\"sha256:d2e676140cf2a796093ed82512b7db68dae33799feb7a0594495a56722ab7acc\",\"sha256:2b826f239412ee76de5d6d65963f56b7c45c570d3bc19c9b9694770eb34a82da\",\"sha256:afd286e47e809ee761abfa94a9673eedc97784471b201709ee45c4a179e6cbbd\",\"sha256:e240af54932e252982f01bdab7af7e6ca0fcd0611d3ba059af4826488df32e5a\"]}}",
+    "repositories": [
+        {
+            "published": false,
+            "push_date": "2025-04-01T17:18:17Z",
+            "registry": "index.docker.io",
+            "repository": "mariadb/maxscale",
+            "tags": [
+                {
+                    "added_date": "2025-04-01T17:18:17Z",
+                    "name": "24.02.5-ubi"
+                }
+            ],
+            "manifest_list_digest": "sha256:b27024bf182b2409b044419d58c360f343ee7533e6898329074dcc1a3c8a0411"
+        }
+    ],
+    "sum_layer_size_bytes": 557018112,
+    "uncompressed_top_layer_id": "sha256:12e07a966416cf5720abd57b88d3140e7e21a8bf28ec8eccce154762f050aad6"
+}

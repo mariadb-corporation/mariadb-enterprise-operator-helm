@@ -1,0 +1,311 @@
+apiVersion: v1
+entries:
+  mariadb-enterprise-operator:
+  - apiVersion: v2
+    appVersion: 0.0.6
+    created: "2025-03-04T15:25:31.401147004Z"
+    dependencies:
+    - condition: crds.enabled
+      name: mariadb-enterprise-operator-crds
+      repository: file://../mariadb-enterprise-operator-crds
+      version: 0.0.6
+    description: Run and operate MariaDB in a cloud native way
+    digest: 6e5176096114ea8b1ecc732c28a478c399005a5e22f9cdce17a654c566568128
+    home: https://github.com/mariadb-corporation/mariadb-enterprise-operator
+    icon: https://mariadb-corporation.github.io/mariadb-enterprise-operator/assets/mariadb_profile.svg
+    keywords:
+    - mariadb
+    - mysql
+    - operator
+    - mariadb-enterprise-operator
+    - database
+    - maxscale
+    kubeVersion: '>=1.26.0-0'
+    maintainers:
+    - email: martin.montes@mariadb.com
+      name: mmontes11
+    name: mariadb-enterprise-operator
+    type: application
+    urls:
+    - mariadb-enterprise-operator-0.0.6.tgz
+    version: 0.0.6
+  - apiVersion: v2
+    appVersion: 0.0.5
+    created: "2025-02-19T10:42:24.897548383Z"
+    dependencies:
+    - condition: crds.enabled
+      name: mariadb-enterprise-operator-crds
+      repository: file://../mariadb-enterprise-operator-crds
+      version: 0.0.5
+    description: Run and operate MariaDB in a cloud native way
+    digest: d9f3e6600deb5505d6c343b16886f637e48033736f1f0897943e26b8fc5b170f
+    home: https://github.com/mariadb-corporation/mariadb-enterprise-operator
+    icon: https://mariadb-corporation.github.io/mariadb-enterprise-operator/assets/mariadb_profile.svg
+    keywords:
+    - mariadb
+    - mysql
+    - operator
+    - mariadb-enterprise-operator
+    - database
+    - maxscale
+    kubeVersion: '>=1.26.0-0'
+    maintainers:
+    - email: martin.montes@mariadb.com
+      name: mmontes11
+    name: mariadb-enterprise-operator
+    type: application
+    urls:
+    - mariadb-enterprise-operator-0.0.5.tgz
+    version: 0.0.5
+  - apiVersion: v2
+    appVersion: 0.0.4
+    created: "2025-02-18T16:41:49.847024521Z"
+    dependencies:
+    - condition: crds.enabled
+      name: mariadb-enterprise-operator-crds
+      repository: file://../mariadb-enterprise-operator-crds
+      version: 0.0.4
+    description: Run and operate MariaDB in a cloud native way
+    digest: acb2cb97091b0feccaf0d9a25f39aa5a026550a3c19c5032c6e02ce5040286b3
+    home: https://github.com/mariadb-corporation/mariadb-enterprise-operator
+    icon: https://mariadb-corporation.github.io/mariadb-enterprise-operator/assets/mariadb_profile.svg
+    keywords:
+    - mariadb
+    - mysql
+    - operator
+    - mariadb-enterprise-operator
+    - database
+    - maxscale
+    kubeVersion: '>=1.26.0-0'
+    maintainers:
+    - email: martin.montes@mariadb.com
+      name: mmontes11
+    name: mariadb-enterprise-operator
+    type: application
+    urls:
+    - mariadb-enterprise-operator-0.0.4.tgz
+    version: 0.0.4
+  - apiVersion: v2
+    appVersion: 0.0.3
+    created: "2025-02-08T10:52:36.173231027Z"
+    dependencies:
+    - condition: crds.enabled
+      name: mariadb-enterprise-operator-crds
+      repository: file://../mariadb-enterprise-operator-crds
+      version: 0.0.3
+    description: Run and operate MariaDB in a cloud native way
+    digest: a483f185c870be3afe87d8a52961b746c42f26df319f5f6aae16e649888bceac
+    home: https://github.com/mariadb-corporation/mariadb-enterprise-operator
+    icon: https://mariadb-corporation.github.io/mariadb-enterprise-operator/assets/mariadb_profile.svg
+    keywords:
+    - mariadb
+    - mysql
+    - operator
+    - mariadb-enterprise-operator
+    - database
+    - maxscale
+    kubeVersion: '>=1.26.0-0'
+    maintainers:
+    - email: martin.montes@mariadb.com
+      name: mmontes11
+    name: mariadb-enterprise-operator
+    type: application
+    urls:
+    - mariadb-enterprise-operator-0.0.3.tgz
+    version: 0.0.3
+  - apiVersion: v2
+    appVersion: 0.0.2
+    created: "2025-02-07T16:56:16.45723637Z"
+    dependencies:
+    - condition: crds.enabled
+      name: mariadb-enterprise-operator-crds
+      repository: file://../mariadb-enterprise-operator-crds
+      version: 0.0.2
+    description: Run and operate MariaDB in a cloud native way
+    digest: 20cb7c2153b3e863cf49fd1ecd5bf293dd188f3dd59e9f82ad27ed178fd51f85
+    home: https://github.com/mariadb-corporation/mariadb-enterprise-operator
+    icon: https://mariadb-corporation.github.io/mariadb-enterprise-operator/assets/mariadb_profile.svg
+    keywords:
+    - mariadb
+    - mysql
+    - operator
+    - mariadb-enterprise-operator
+    - database
+    - maxscale
+    kubeVersion: '>=1.26.0-0'
+    maintainers:
+    - email: martin.montes@mariadb.com
+      name: mmontes11
+    name: mariadb-enterprise-operator
+    type: application
+    urls:
+    - mariadb-enterprise-operator-0.0.2.tgz
+    version: 0.0.2
+  - apiVersion: v2
+    appVersion: 0.0.1
+    created: "2025-02-07T15:47:20.415673517Z"
+    dependencies:
+    - condition: crds.enabled
+      name: mariadb-enterprise-operator-crds
+      repository: file://../mariadb-enterprise-operator-crds
+      version: 0.0.1
+    description: Run and operate MariaDB in a cloud native way
+    digest: 2990d7f7ce97e3fee192c18c4396333abb3480d65fd6109c46472dc2a25c700d
+    home: https://github.com/mariadb-corporation/mariadb-enterprise-operator
+    icon: https://mariadb-corporation.github.io/mariadb-enterprise-operator/assets/mariadb_profile.svg
+    keywords:
+    - mariadb
+    - mysql
+    - operator
+    - mariadb-enterprise-operator
+    - database
+    - maxscale
+    kubeVersion: '>=1.26.0-0'
+    maintainers:
+    - email: martin.montes@mariadb.com
+      name: mmontes11
+    name: mariadb-enterprise-operator
+    type: application
+    urls:
+    - mariadb-enterprise-operator-0.0.1.tgz
+    version: 0.0.1
+  mariadb-enterprise-operator-crds:
+  - apiVersion: v2
+    appVersion: 0.0.0
+    created: "2025-03-04T15:25:31.583982578Z"
+    description: mariadb-enterprise-operator CRDs
+    digest: be06a903d288059a4cff5ff8cb0692646bf52d783e41f0f45322f3fe1fcb9e80
+    home: https://github.com/mariadb-corporation/mariadb-enterprise-operator
+    icon: https://mariadb-corporation.github.io/mariadb-enterprise-operator/assets/mariadb_profile.svg
+    keywords:
+    - mariadb
+    - mysql
+    - operator
+    - mariadb-enterprise-operator
+    - database
+    - maxscale
+    kubeVersion: '>=1.26.0-0'
+    maintainers:
+    - email: martin.montes@mariadb.com
+      name: mmontes11
+    name: mariadb-enterprise-operator-crds
+    type: application
+    urls:
+    - mariadb-enterprise-operator-crds-0.0.6.tgz
+    version: 0.0.6
+  - apiVersion: v2
+    appVersion: 0.0.0
+    created: "2025-02-19T10:42:25.003253927Z"
+    description: mariadb-enterprise-operator CRDs
+    digest: 67bc78acc76d49f166e6644681accbd97b91dc08880100be601fb13330816a80
+    home: https://github.com/mariadb-corporation/mariadb-enterprise-operator
+    icon: https://mariadb-corporation.github.io/mariadb-enterprise-operator/assets/mariadb_profile.svg
+    keywords:
+    - mariadb
+    - mysql
+    - operator
+    - mariadb-enterprise-operator
+    - database
+    - maxscale
+    kubeVersion: '>=1.26.0-0'
+    maintainers:
+    - email: martin.montes@mariadb.com
+      name: mmontes11
+    name: mariadb-enterprise-operator-crds
+    type: application
+    urls:
+    - mariadb-enterprise-operator-crds-0.0.5.tgz
+    version: 0.0.5
+  - apiVersion: v2
+    appVersion: 0.0.0
+    created: "2025-02-18T16:41:49.953481587Z"
+    description: mariadb-enterprise-operator CRDs
+    digest: d6ba9750612cd1071f1305fbdbe06650ead7c133dc4ec83f7f01b22e2b5d9b99
+    home: https://github.com/mariadb-corporation/mariadb-enterprise-operator
+    icon: https://mariadb-corporation.github.io/mariadb-enterprise-operator/assets/mariadb_profile.svg
+    keywords:
+    - mariadb
+    - mysql
+    - operator
+    - mariadb-enterprise-operator
+    - database
+    - maxscale
+    kubeVersion: '>=1.26.0-0'
+    maintainers:
+    - email: martin.montes@mariadb.com
+      name: mmontes11
+    name: mariadb-enterprise-operator-crds
+    type: application
+    urls:
+    - mariadb-enterprise-operator-crds-0.0.4.tgz
+    version: 0.0.4
+  - apiVersion: v2
+    appVersion: 0.0.0
+    created: "2025-02-08T10:52:36.358075734Z"
+    description: mariadb-enterprise-operator CRDs
+    digest: ef73b9d8d0d014188ada3e2acf9dfe45d44dd1849c0dac4b51e8bbf9fc5728a9
+    home: https://github.com/mariadb-corporation/mariadb-enterprise-operator
+    icon: https://mariadb-corporation.github.io/mariadb-enterprise-operator/assets/mariadb_profile.svg
+    keywords:
+    - mariadb
+    - mysql
+    - operator
+    - mariadb-enterprise-operator
+    - database
+    - maxscale
+    kubeVersion: '>=1.26.0-0'
+    maintainers:
+    - email: martin.montes@mariadb.com
+      name: mmontes11
+    name: mariadb-enterprise-operator-crds
+    type: application
+    urls:
+    - mariadb-enterprise-operator-crds-0.0.3.tgz
+    version: 0.0.3
+  - apiVersion: v2
+    appVersion: 0.0.0
+    created: "2025-02-07T16:56:16.636072899Z"
+    description: mariadb-enterprise-operator CRDs
+    digest: 070cdf77707eecbf4d598f4bc2f194038ecefe98f4ff3a585f313bb838c9cce1
+    home: https://github.com/mariadb-corporation/mariadb-enterprise-operator
+    icon: https://mariadb-corporation.github.io/mariadb-enterprise-operator/assets/mariadb_profile.svg
+    keywords:
+    - mariadb
+    - mysql
+    - operator
+    - mariadb-enterprise-operator
+    - database
+    - maxscale
+    kubeVersion: '>=1.26.0-0'
+    maintainers:
+    - email: martin.montes@mariadb.com
+      name: mmontes11
+    name: mariadb-enterprise-operator-crds
+    type: application
+    urls:
+    - mariadb-enterprise-operator-crds-0.0.2.tgz
+    version: 0.0.2
+  - apiVersion: v2
+    appVersion: 0.0.0
+    created: "2025-02-07T15:47:20.520983479Z"
+    description: mariadb-enterprise-operator CRDs
+    digest: d5fcd0e121b2d45bc64738aef9633909851b9156eaf6e36361581e31a5bdcf29
+    home: https://github.com/mariadb-corporation/mariadb-enterprise-operator
+    icon: https://mariadb-corporation.github.io/mariadb-enterprise-operator/assets/mariadb_profile.svg
+    keywords:
+    - mariadb
+    - mysql
+    - operator
+    - mariadb-enterprise-operator
+    - database
+    - maxscale
+    kubeVersion: '>=1.26.0-0'
+    maintainers:
+    - email: martin.montes@mariadb.com
+      name: mmontes11
+    name: mariadb-enterprise-operator-crds
+    type: application
+    urls:
+    - mariadb-enterprise-operator-crds-0.0.1.tgz
+    version: 0.0.1
+generated: "2025-03-04T15:25:31.584333763Z"
