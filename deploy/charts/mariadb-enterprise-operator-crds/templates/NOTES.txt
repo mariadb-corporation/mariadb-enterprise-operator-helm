@@ -1,0 +1,3 @@
+mariadb-enterprise-operator CRDs have been successfully installed! 🦭
+
+To get started, please follow the instructions in the documentation.

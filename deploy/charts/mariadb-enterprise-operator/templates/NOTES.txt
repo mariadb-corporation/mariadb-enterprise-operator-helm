@@ -1,0 +1,4 @@
+mariadb-enterprise-operator has been successfully deployed! 🦭
+
+To get started, please follow the quickstart guide:
+https://mariadb.com/kb/en/quickstart/

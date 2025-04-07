@@ -1,0 +1,32 @@
+apiVersion: v2
+name: mariadb-enterprise-operator
+description: Run and operate MariaDB Enterprise in Kubernetes
+home: https://github.com/mariadb-corporation/mariadb-enterprise-operator-helm
+icon: https://operator.mariadb.com/assets/mariadb_profile.svg
+type: application
+version: 0.0.6
+appVersion: "0.0.6"
+kubeVersion: ">=1.26.0-0"
+maintainers:
+  - email: operator@mariadb.com
+    name: MariaDB Corporation
+  - email: support@mariadb.com
+    name: Support
+  - email: sales-EMEA@mariadb.com
+    name: Sales EMEA
+  - email: sales-APAC@mariadb.com
+    name: Sales APAC
+  - email: sales-nam@mariadb.com
+    name: Sales Americas
+keywords:
+  - mariadb
+  - mysql
+  - operator
+  - mariadb-enterprise-operator
+  - database
+  - maxscale
+dependencies:
+  - name: mariadb-enterprise-operator-crds
+    version: "0.0.6"
+    condition: crds.enabled
+    repository: file://../mariadb-enterprise-operator-crds
