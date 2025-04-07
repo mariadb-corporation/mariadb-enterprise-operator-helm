@@ -4,7 +4,7 @@ description: MariaDB Enterprise Operator CRDs
 home: https://github.com/mariadb-corporation/mariadb-enterprise-operator-helm
 icon: https://operator.mariadb.com/assets/mariadb_profile.svg
 type: application
-version: 0.0.6
+version: 0.0.7
 appVersion: "0.0.0"
 kubeVersion: ">=1.26.0-0"
 maintainers:
