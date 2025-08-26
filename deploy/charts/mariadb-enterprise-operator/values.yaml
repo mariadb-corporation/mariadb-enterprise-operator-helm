@@ -1,6 +1,6 @@
 nameOverride: ""
 fullnameOverride: ""
-# --- CRDs
+# -- CRDs
 crds:
   # -- Whether the helm chart should create and update the CRDs. It is false by default, which implies that the CRDs must be
   # managed independently with the mariadb-enterprise-operator-crds helm chart.
@@ -319,10 +319,10 @@ config:
   # -- Default MariaDB Enterprise version to be used when unable to infer it via image tag
   mariadbDefaultVersion: "11.4"
   # -- Default MariaDB Enterprise image
-  mariadbImage: docker.mariadb.com/enterprise-server:11.4.5-3
+  mariadbImage: docker.mariadb.com/enterprise-server:11.4.7-4.1
   # -- Default MaxScale Enterprise image
-  maxscaleImage: docker.mariadb.com/maxscale-enterprise:25.01.2
+  maxscaleImage: docker.mariadb.com/maxscale:25.01.3-1
   # -- Default MariaDB exporter image
-  exporterImage: mariadb/mariadb-prometheus-exporter-ubi:1.0.0
+  exporterImage: mariadb/mariadb-prometheus-exporter-ubi:1.1.0
   # -- Default MaxScale exporter image
-  exporterMaxscaleImage: mariadb/maxscale-prometheus-exporter-ubi:1.0.0
+  exporterMaxscaleImage: mariadb/maxscale-prometheus-exporter-ubi:1.1.0
