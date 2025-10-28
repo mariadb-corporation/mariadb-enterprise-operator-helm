@@ -51,7 +51,7 @@ jobs:
       - name: Lint
         if: steps.list-changed.outputs.changed == 'true'
         run: ct lint --config $CT_CONFIG
-      
+
       - name: Cluster
         if: steps.list-changed.outputs.changed == 'true'
         run: make cluster
@@ -94,7 +94,7 @@ jobs:
       - name: Lint
         if: steps.list-changed.outputs.changed == 'true'
         run: ct lint --config $CT_CONFIG
-      
+
       - name: Cluster
         if: steps.list-changed.outputs.changed == 'true'
         run: make cluster
@@ -135,3 +135,4 @@ jobs:
           skip_existing: "true"
           pages_branch: gh-pages
           packages_with_index: true
+          mark_as_latest: false
