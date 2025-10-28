@@ -4,8 +4,8 @@ description: Run and operate MariaDB Enterprise in Kubernetes
 home: https://github.com/mariadb-corporation/mariadb-enterprise-operator-helm
 icon: https://operator.mariadb.com/assets/mariadb_profile.svg
 type: application
-version: 25.8.0
-appVersion: "25.8.0"
+version: 25.10.0
+appVersion: "25.10.0"
 kubeVersion: ">=1.26.0-0"
 maintainers:
   - email: operator@mariadb.com
@@ -27,6 +27,6 @@ keywords:
   - maxscale
 dependencies:
   - name: mariadb-enterprise-operator-crds
-    version: "25.8.0"
+    version: "25.10.0"
     condition: crds.enabled
     repository: file://../mariadb-enterprise-operator-crds
