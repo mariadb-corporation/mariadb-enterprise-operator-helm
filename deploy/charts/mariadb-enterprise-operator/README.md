@@ -1,6 +1,6 @@
 # mariadb-enterprise-operator
 
-![Version: 25.10.1](https://img.shields.io/badge/Version-25.10.1-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 25.10.1](https://img.shields.io/badge/AppVersion-25.10.1-informational?style=flat-square)
+![Version: 25.10.2](https://img.shields.io/badge/Version-25.10.2-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 25.10.2](https://img.shields.io/badge/AppVersion-25.10.2-informational?style=flat-square)
 
 Run and operate MariaDB Enterprise in Kubernetes
 
@@ -22,7 +22,7 @@ Kubernetes: `>=1.26.0-0`
 
 | Repository | Name | Version |
 |------------|------|---------|
-| file://../mariadb-enterprise-operator-crds | mariadb-enterprise-operator-crds | 25.10.1 |
+| file://../mariadb-enterprise-operator-crds | mariadb-enterprise-operator-crds | 25.10.2 |
 
 ## Values
 
