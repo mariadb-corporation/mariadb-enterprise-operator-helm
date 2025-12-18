@@ -1,6 +1,6 @@
 # mariadb-enterprise-operator
 
-![Version: 25.10.3](https://img.shields.io/badge/Version-25.10.3-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 25.10.3](https://img.shields.io/badge/AppVersion-25.10.3-informational?style=flat-square)
+![Version: 25.10.2](https://img.shields.io/badge/Version-25.10.2-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 25.10.2](https://img.shields.io/badge/AppVersion-25.10.2-informational?style=flat-square)
 
 Run and operate MariaDB Enterprise in Kubernetes
 
@@ -22,7 +22,7 @@ Kubernetes: `>=1.26.0-0`
 
 | Repository | Name | Version |
 |------------|------|---------|
-| file://../mariadb-enterprise-operator-crds | mariadb-enterprise-operator-crds | 25.10.3 |
+| file://../mariadb-enterprise-operator-crds | mariadb-enterprise-operator-crds | 25.10.2 |
 
 ## Values
 
@@ -72,7 +72,7 @@ Kubernetes: `>=1.26.0-0`
 | config.exporterMaxscaleImage | string | `"mariadb/maxscale-prometheus-exporter-ubi:1.1.0"` | Default MaxScale exporter image |
 | config.galeraLibPath | string | `"/usr/lib64/galera/libgalera_enterprise_smm.so"` | Galera Enterprise library path to be used with Galera |
 | config.mariadbDefaultVersion | string | `"11.8"` | Default MariaDB Enterprise version to be used when unable to infer it via image tag |
-| config.mariadbImage | string | `"docker.mariadb.com/enterprise-server:11.8.5-2"` | Default MariaDB Enterprise image |
+| config.mariadbImage | string | `"docker.mariadb.com/enterprise-server:11.8.3-1"` | Default MariaDB Enterprise image |
 | config.mariadbImageName | string | `"docker.mariadb.com/enterprise-server"` | Default MariaDB Enterprise image name |
 | config.maxscaleImage | string | `"docker.mariadb.com/maxscale:25.10.0"` | Default MaxScale Enterprise image |
 | crds | object | `{"enabled":false}` | CRDs |
@@ -107,7 +107,7 @@ Kubernetes: `>=1.26.0-0`
 | pprof.enabled | bool | `false` | Enable the pprof HTTP server. |
 | pprof.port | int | `6060` | The port where the pprof HTTP server listens. |
 | priorityClassName | string | `""` | priorityClassName to add to controller Pod |
-| rbac.aggregation.enabled | bool | `true` | Specifies whether the cluster roles aggregate to view and edit predefinied roles |
+| rbac.aggregation.enabled | bool | `true` | Specifies whether the cluster roles aggrate to view and edit predefinied roles |
 | rbac.enabled | bool | `true` | Specifies whether RBAC resources should be created |
 | resources | object | `{}` | Resources to add to controller container |
 | securityContext | object | `{}` | Security context to add to controller container |
