@@ -60,7 +60,7 @@ rbac:
   # -- Specifies whether RBAC resources should be created
   enabled: true
   aggregation:
-    # -- Specifies whether the cluster roles aggrate to view and edit predefinied roles
+    # -- Specifies whether the cluster roles aggregate to view and edit predefinied roles
     enabled: true
 # -- Extra arguments to be passed to the controller entrypoint
 extrArgs: []
@@ -319,7 +319,7 @@ config:
   # -- Default MariaDB Enterprise version to be used when unable to infer it via image tag
   mariadbDefaultVersion: "11.8"
   # -- Default MariaDB Enterprise image
-  mariadbImage: docker.mariadb.com/enterprise-server:11.8.3-1
+  mariadbImage: docker.mariadb.com/enterprise-server:11.8.5-2
   # -- Default MariaDB Enterprise image name
   mariadbImageName: docker.mariadb.com/enterprise-server
   # -- Default MaxScale Enterprise image
