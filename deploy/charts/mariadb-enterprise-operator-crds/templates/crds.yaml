@@ -344,8 +344,16 @@ spec:
                 type: object
               logLevel:
                 default: info
-                description: LogLevel to be used n the Backup Job. It defaults to
+                description: LogLevel to be used in the Backup Job. It defaults to
                   'info'.
+                enum:
+                - debug
+                - info
+                - warn
+                - error
+                - dpanic
+                - panic
+                - fatal
                 type: string
               mariaDbRef:
                 description: MariaDBRef is a reference to a MariaDB object.
@@ -6703,7 +6711,7 @@ spec:
                 description: |-
                   PasswordHashSecretKeyRef is a reference to the password hash to be used by the initial User.
                   If the referred Secret is labeled with "enterprise.mariadb.com/watch", updates may be performed to the Secret in order to update the password hash.
-                  It requires the 'skip-strict-password-validation' option to be set. See: https://mariadb.com/docs/server/ref/mdb/cli/mariadbd/strict-password-validation/.
+                  It requires the 'strict-password-validation=false' option to be set. See: https://mariadb.com/docs/server/server-management/variables-and-modes/server-system-variables#strict_password_validation.
                 properties:
                   key:
                     type: string
@@ -6717,7 +6725,7 @@ spec:
               passwordPlugin:
                 description: |-
                   PasswordPlugin is a reference to the password plugin and arguments to be used by the initial User.
-                  It requires the 'skip-strict-password-validation' option to be set. See: https://mariadb.com/docs/server/ref/mdb/cli/mariadbd/strict-password-validation/.
+                  It requires the 'strict-password-validation=false' option to be set. See: https://mariadb.com/docs/server/server-management/variables-and-modes/server-system-variables#strict_password_validation.
                 properties:
                   pluginArgSecretKeyRef:
                     description: |-
@@ -12507,6 +12515,19 @@ spec:
                     description: Labels to be added to children resources.
                     type: object
                 type: object
+              logLevel:
+                default: info
+                description: LogLevel to be used in the PhysicalBackup Job. It defaults
+                  to 'info'.
+                enum:
+                - debug
+                - info
+                - warn
+                - error
+                - dpanic
+                - panic
+                - fatal
+                type: string
               mariaDbRef:
                 description: MariaDBRef is a reference to a MariaDB object.
                 properties:
@@ -13186,6 +13207,14 @@ spec:
                 format: int32
                 minimum: 0
                 type: integer
+              target:
+                description: Target defines in which Pod the physical backups will
+                  be taken. It defaults to "Replica", meaning that the physical backups
+                  will only be taken in ready replicas.
+                enum:
+                - Replica
+                - PreferReplica
+                type: string
               timeout:
                 description: |-
                   Timeout defines the maximum duration of a PhysicalBackup job or snapshot.
@@ -13655,6 +13684,14 @@ spec:
                 default: info
                 description: LogLevel to be used n the Backup Job. It defaults to
                   'info'.
+                enum:
+                - debug
+                - info
+                - warn
+                - error
+                - dpanic
+                - panic
+                - fatal
                 type: string
               mariaDbRef:
                 description: MariaDBRef is a reference to a MariaDB object.
@@ -15136,7 +15173,7 @@ spec:
                 description: |-
                   PasswordHashSecretKeyRef is a reference to the password hash to be used by the User.
                   If the referred Secret is labeled with "enterprise.mariadb.com/watch", updates may be performed to the Secret in order to update the password hash.
-                  It requires the 'skip-strict-password-validation' option to be set. See: https://mariadb.com/docs/server/ref/mdb/cli/mariadbd/strict-password-validation/.
+                  It requires the 'strict-password-validation=false' option to be set. See: https://mariadb.com/docs/server/server-management/variables-and-modes/server-system-variables#strict_password_validation.
                 properties:
                   key:
                     type: string
@@ -15150,7 +15187,7 @@ spec:
               passwordPlugin:
                 description: |-
                   PasswordPlugin is a reference to the password plugin and arguments to be used by the User.
-                  It requires the 'skip-strict-password-validation' option to be set. See: https://mariadb.com/docs/server/ref/mdb/cli/mariadbd/strict-password-validation/.
+                  It requires the 'strict-password-validation=false' option to be set. See: https://mariadb.com/docs/server/server-management/variables-and-modes/server-system-variables#strict_password_validation.
                 properties:
                   pluginArgSecretKeyRef:
                     description: |-
