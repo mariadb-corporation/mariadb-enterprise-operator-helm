@@ -1,6 +1,6 @@
 # mariadb-enterprise-operator
 
-![Version: 25.10.3](https://img.shields.io/badge/Version-25.10.3-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 25.10.3](https://img.shields.io/badge/AppVersion-25.10.3-informational?style=flat-square)
+![Version: 25.10.4](https://img.shields.io/badge/Version-25.10.4-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 25.10.4](https://img.shields.io/badge/AppVersion-25.10.4-informational?style=flat-square)
 
 Run and operate MariaDB Enterprise in Kubernetes
 
@@ -22,7 +22,7 @@ Kubernetes: `>=1.26.0-0`
 
 | Repository | Name | Version |
 |------------|------|---------|
-| file://../mariadb-enterprise-operator-crds | mariadb-enterprise-operator-crds | 25.10.3 |
+| file://../mariadb-enterprise-operator-crds | mariadb-enterprise-operator-crds | 25.10.4 |
 
 ## Values
 
@@ -33,7 +33,7 @@ Kubernetes: `>=1.26.0-0`
 | certController.caLifetime | string | `"26280h"` | CA certificate lifetime. It must be greater than certLifetime. |
 | certController.certLifetime | string | `"2160h"` | Certificate lifetime. |
 | certController.enabled | bool | `true` | Specifies whether the cert-controller should be created. |
-| certController.extrArgs | list | `[]` | Extra arguments to be passed to the cert-controller entrypoint |
+| certController.extraArgs | list | `[]` | Extra arguments to be passed to the cert-controller entrypoint |
 | certController.extraVolumeMounts | list | `[]` | Extra volumes to mount to cert-controller container |
 | certController.extraVolumes | list | `[]` | Extra volumes to pass to cert-controller Pod |
 | certController.ha.enabled | bool | `false` | Enable high availability |
@@ -74,11 +74,11 @@ Kubernetes: `>=1.26.0-0`
 | config.mariadbDefaultVersion | string | `"11.8"` | Default MariaDB Enterprise version to be used when unable to infer it via image tag |
 | config.mariadbImage | string | `"docker.mariadb.com/enterprise-server:11.8.5-2"` | Default MariaDB Enterprise image |
 | config.mariadbImageName | string | `"docker.mariadb.com/enterprise-server"` | Default MariaDB Enterprise image name |
-| config.maxscaleImage | string | `"docker.mariadb.com/maxscale:25.10.0"` | Default MaxScale Enterprise image |
+| config.maxscaleImage | string | `"docker.mariadb.com/maxscale:25.10.1"` | Default MaxScale Enterprise image |
 | crds | object | `{"enabled":false}` | CRDs |
 | crds.enabled | bool | `false` | Whether the helm chart should create and update the CRDs. It is false by default, which implies that the CRDs must be managed independently with the mariadb-enterprise-operator-crds helm chart. **WARNING** This should only be set to true during the initial deployment. If this chart manages the CRDs and is later uninstalled, all MariaDB instances will be DELETED. |
 | currentNamespaceOnly | bool | `false` | Whether the operator should watch CRDs only in its own namespace or not. |
-| extrArgs | list | `[]` | Extra arguments to be passed to the controller entrypoint |
+| extraArgs | list | `[]` | Extra arguments to be passed to the controller entrypoint |
 | extraEnv | list | `[]` | Extra environment variables to be passed to the controller |
 | extraEnvFrom | list | `[]` | Extra environment variables from preexiting ConfigMap / Secret objects used by the controller using envFrom |
 | extraVolumeMounts | list | `[]` | Extra volumes to mount to the container. |
@@ -133,7 +133,7 @@ Kubernetes: `>=1.26.0-0`
 | webhook.cert.secretAnnotations | object | `{}` | Annotatioms to be added to webhook TLS secret. |
 | webhook.cert.secretLabels | object | `{}` | Labels to be added to webhook TLS secret. |
 | webhook.enabled | bool | `true` | Specifies whether the webhook should be created. |
-| webhook.extrArgs | list | `[]` | Extra arguments to be passed to the webhook entrypoint |
+| webhook.extraArgs | list | `[]` | Extra arguments to be passed to the webhook entrypoint |
 | webhook.extraVolumeMounts | list | `[]` | Extra volumes to mount to webhook container |
 | webhook.extraVolumes | list | `[]` | Extra volumes to pass to webhook Pod |
 | webhook.ha.enabled | bool | `false` | Enable high availability |
