@@ -2528,6 +2528,68 @@ spec:
               bootstrapFrom:
                 description: BootstrapFrom defines a source to bootstrap from.
                 properties:
+                  azureBlob:
+                    description: |-
+                      AzureBlob defines the configuration to restore from Azure Blob compatible storage.
+                      This field takes precedence over the Volume source.
+                    properties:
+                      containerName:
+                        description: ContainerName is the name of the storage container.
+                        type: string
+                      prefix:
+                        description: 'Prefix indicates a folder/subfolder in the container.
+                          For example: mariadb/ or mariadb/backups. A trailing slash
+                          ''/'' is added if not provided.'
+                        type: string
+                      serviceURL:
+                        description: 'ServiceURL is the full URL for connecting to
+                          Azure, usually in the form: http(s)://<account>.blob.core.windows.net/.'
+                        type: string
+                      storageAccountKey:
+                        description: StorageAccountKey is a reference to a Secret
+                          key containing the Azure Blob Storage Storage account Key.
+                          Pairs with StorageAccountKey for static credential authentication
+                        properties:
+                          key:
+                            type: string
+                          name:
+                            default: ""
+                            type: string
+                        required:
+                        - key
+                        type: object
+                        x-kubernetes-map-type: atomic
+                      storageAccountName:
+                        description: StorageAccountName is the name of the storage
+                          account. Pairs with StorageAccountKey for static credential
+                          authentication
+                        type: string
+                      tls:
+                        description: TLS provides the configuration required to establish
+                          TLS connections with Azure Blob Storage.
+                        properties:
+                          caSecretKeyRef:
+                            description: |-
+                              CASecretKeyRef is a reference to a Secret key containing a CA bundle in PEM format used to establish TLS connections with S3.
+                              By default, the system trust chain will be used, but you can use this field to add more CAs to the bundle.
+                            properties:
+                              key:
+                                type: string
+                              name:
+                                default: ""
+                                type: string
+                            required:
+                            - key
+                            type: object
+                            x-kubernetes-map-type: atomic
+                          enabled:
+                            description: Enabled is a flag to enable TLS.
+                            type: boolean
+                        type: object
+                    required:
+                    - containerName
+                    - serviceURL
+                    type: object
                   backupContentType:
                     description: |-
                       BackupContentType is the backup content type available in the source to bootstrap from.
@@ -2549,9 +2611,32 @@ spec:
                         description: Name of the referent.
                         type: string
                     type: object
+                  logLevel:
+                    default: info
+                    description: LogLevel to be used in the mariadb-enterprise-operator
+                      container of the restoration Job. It defaults to 'info'.
+                    enum:
+                    - debug
+                    - info
+                    - warn
+                    - error
+                    - dpanic
+                    - panic
+                    - fatal
+                    type: string
+                  pointInTimeRecoveryRef:
+                    description: |-
+                      PointInTimeRecoveryRef is a reference to a PointInTimeRecovery object.
+                      Providing this field implies restoring the PhysicalBackup referenced in the PointInTimeRecovery object and replaying the
+                      archived binary logs up to the point-in-time restoration target, defined by the targetRecoveryTime field.
+                    properties:
+                      name:
+                        default: ""
+                        type: string
+                    type: object
                   restoreJob:
                     description: RestoreJob defines additional properties for the
-                      Job used to perform the restoration.
+                      restoration Job.
                     properties:
                       affinity:
                         description: Affinity to be used in the Pod.
@@ -2992,7 +3077,7 @@ spec:
                     type: object
                   stagingStorage:
                     description: |-
-                      StagingStorage defines the temporary storage used to keep external backups (i.e. S3) while they are being processed.
+                      StagingStorage defines the temporary storage used to keep external backups and binary logs (i.e. S3) while they are being processed.
                       It defaults to an emptyDir volume, meaning that the backups will be temporarily stored in the node where the Job is scheduled.
                     properties:
                       persistentVolumeClaim:
@@ -4770,1430 +4855,10 @@ spec:
                     format: int32
                     type: integer
                 type: object
-              maxScale:
-                description: |-
-                  MaxScale is the MaxScale specification that defines the MaxScale resource to be used with the current MariaDB.
-                  When enabling this field, MaxScaleRef is automatically set.
-                properties:
-                  admin:
-                    description: Admin configures the admin REST API and GUI.
-                    properties:
-                      guiEnabled:
-                        description: GuiEnabled indicates whether the admin GUI should
-                          be enabled.
-                        type: boolean
-                      port:
-                        description: Port where the admin REST API and GUI will be
-                          exposed.
-                        format: int32
-                        type: integer
-                    type: object
-                  auth:
-                    description: Auth defines the credentials required for MaxScale
-                      to connect to MariaDB.
-                    properties:
-                      adminPasswordSecretKeyRef:
-                        description: AdminPasswordSecretKeyRef is Secret key reference
-                          to the admin password to call the admin REST API. It is
-                          defaulted if not provided.
-                        properties:
-                          generate:
-                            default: false
-                            description: Generate indicates whether the Secret should
-                              be generated if the Secret referenced is not present.
-                            type: boolean
-                          key:
-                            type: string
-                          name:
-                            default: ""
-                            type: string
-                        required:
-                        - key
-                        type: object
-                        x-kubernetes-map-type: atomic
-                      adminUsername:
-                        description: AdminUsername is an admin username to call the
-                          admin REST API. It is defaulted if not provided.
-                        type: string
-                      clientMaxConnections:
-                        description: |-
-                          ClientMaxConnections defines the maximum number of connections that the client can establish.
-                          If HA is enabled, make sure to increase this value, as more MaxScale replicas implies more connections.
-                          It defaults to 30 times the number of MaxScale replicas.
-                        format: int32
-                        type: integer
-                      clientPasswordSecretKeyRef:
-                        description: |-
-                          ClientPasswordSecretKeyRef is Secret key reference to the password to connect to MaxScale. It is defaulted if not provided.
-                          If the referred Secret is labeled with "enterprise.mariadb.com/watch", updates may be performed to the Secret in order to update the password.
-                        properties:
-                          generate:
-                            default: false
-                            description: Generate indicates whether the Secret should
-                              be generated if the Secret referenced is not present.
-                            type: boolean
-                          key:
-                            type: string
-                          name:
-                            default: ""
-                            type: string
-                        required:
-                        - key
-                        type: object
-                        x-kubernetes-map-type: atomic
-                      clientUsername:
-                        description: ClientUsername is the user to connect to MaxScale.
-                          It is defaulted if not provided.
-                        type: string
-                      deleteDefaultAdmin:
-                        description: DeleteDefaultAdmin determines whether the default
-                          admin user should be deleted after the initial configuration.
-                          If not provided, it defaults to true.
-                        type: boolean
-                      generate:
-                        description: |-
-                          Generate  defies whether the operator should generate users and grants for MaxScale to work.
-                          It only supports MariaDBs specified via spec.mariaDbRef.
-                        type: boolean
-                      metricsPasswordSecretKeyRef:
-                        description: MetricsPasswordSecretKeyRef is Secret key reference
-                          to the metrics password to call the admib REST API. It is
-                          defaulted if metrics are enabled.
-                        properties:
-                          generate:
-                            default: false
-                            description: Generate indicates whether the Secret should
-                              be generated if the Secret referenced is not present.
-                            type: boolean
-                          key:
-                            type: string
-                          name:
-                            default: ""
-                            type: string
-                        required:
-                        - key
-                        type: object
-                        x-kubernetes-map-type: atomic
-                      metricsUsername:
-                        description: MetricsUsername is an metrics username to call
-                          the REST API. It is defaulted if metrics are enabled.
-                        type: string
-                      monitorMaxConnections:
-                        description: |-
-                          MonitorMaxConnections defines the maximum number of connections that the monitor can establish.
-                          If HA is enabled, make sure to increase this value, as more MaxScale replicas implies more connections.
-                          It defaults to 30 times the number of MaxScale replicas.
-                        format: int32
-                        type: integer
-                      monitorPasswordSecretKeyRef:
-                        description: |-
-                          MonitorPasswordSecretKeyRef is Secret key reference to the password used by MaxScale monitor to connect to MariaDB server. It is defaulted if not provided.
-                          If the referred Secret is labeled with "enterprise.mariadb.com/watch", updates may be performed to the Secret in order to update the password.
-                        properties:
-                          generate:
-                            default: false
-                            description: Generate indicates whether the Secret should
-                              be generated if the Secret referenced is not present.
-                            type: boolean
-                          key:
-                            type: string
-                          name:
-                            default: ""
-                            type: string
-                        required:
-                        - key
-                        type: object
-                        x-kubernetes-map-type: atomic
-                      monitorUsername:
-                        description: MonitorUsername is the user used by MaxScale
-                          monitor to connect to MariaDB server. It is defaulted if
-                          not provided.
-                        type: string
-                      serverMaxConnections:
-                        description: |-
-                          ServerMaxConnections defines the maximum number of connections that the server can establish.
-                          If HA is enabled, make sure to increase this value, as more MaxScale replicas implies more connections.
-                          It defaults to 30 times the number of MaxScale replicas.
-                        format: int32
-                        type: integer
-                      serverPasswordSecretKeyRef:
-                        description: |-
-                          ServerPasswordSecretKeyRef is Secret key reference to the password used by MaxScale to connect to MariaDB server. It is defaulted if not provided.
-                          If the referred Secret is labeled with "enterprise.mariadb.com/watch", updates may be performed to the Secret in order to update the password.
-                        properties:
-                          generate:
-                            default: false
-                            description: Generate indicates whether the Secret should
-                              be generated if the Secret referenced is not present.
-                            type: boolean
-                          key:
-                            type: string
-                          name:
-                            default: ""
-                            type: string
-                        required:
-                        - key
-                        type: object
-                        x-kubernetes-map-type: atomic
-                      serverUsername:
-                        description: ServerUsername is the user used by MaxScale to
-                          connect to MariaDB server. It is defaulted if not provided.
-                        type: string
-                      syncMaxConnections:
-                        description: |-
-                          SyncMaxConnections defines the maximum number of connections that the sync can establish.
-                          If HA is enabled, make sure to increase this value, as more MaxScale replicas implies more connections.
-                          It defaults to 30 times the number of MaxScale replicas.
-                        format: int32
-                        type: integer
-                      syncPasswordSecretKeyRef:
-                        description: |-
-                          SyncPasswordSecretKeyRef is Secret key reference to the password used by MaxScale config to connect to MariaDB server. It is defaulted when HA is enabled.
-                          If the referred Secret is labeled with "enterprise.mariadb.com/watch", updates may be performed to the Secret in order to update the password.
-                        properties:
-                          generate:
-                            default: false
-                            description: Generate indicates whether the Secret should
-                              be generated if the Secret referenced is not present.
-                            type: boolean
-                          key:
-                            type: string
-                          name:
-                            default: ""
-                            type: string
-                        required:
-                        - key
-                        type: object
-                        x-kubernetes-map-type: atomic
-                      syncUsername:
-                        description: MonitoSyncUsernamerUsername is the user used
-                          by MaxScale config sync to connect to MariaDB server. It
-                          is defaulted when HA is enabled.
-                        type: string
-                    type: object
-                  config:
-                    description: Config defines the MaxScale configuration.
-                    properties:
-                      params:
-                        additionalProperties:
-                          type: string
-                        description: |-
-                          Params is a key value pair of parameters to be used in the MaxScale static configuration file.
-                          Any parameter supported by MaxScale may be specified here. See reference:
-                          https://mariadb.com/kb/en/mariadb-maxscale-2308-mariadb-maxscale-configuration-guide/#global-settings.
-                        type: object
-                      sync:
-                        description: Sync defines how to replicate configuration across
-                          MaxScale replicas. It is defaulted when HA is enabled.
-                        properties:
-                          database:
-                            description: Database is the MariaDB logical database
-                              where the 'maxscale_config' table will be created in
-                              order to persist and synchronize config changes. If
-                              not provided, it defaults to 'mysql'.
-                            type: string
-                          interval:
-                            description: Interval defines the config synchronization
-                              interval. It is defaulted if not provided.
-                            type: string
-                          timeout:
-                            description: Interval defines the config synchronization
-                              timeout. It is defaulted if not provided.
-                            type: string
-                        type: object
-                      volumeClaimTemplate:
-                        description: VolumeClaimTemplate provides a template to define
-                          the PVCs for storing MaxScale runtime configuration files.
-                          It is defaulted if not provided.
-                        properties:
-                          accessModes:
-                            items:
-                              type: string
-                            type: array
-                            x-kubernetes-list-type: atomic
-                          metadata:
-                            description: Metadata to be added to the PVC metadata.
-                            properties:
-                              annotations:
-                                additionalProperties:
-                                  type: string
-                                description: Annotations to be added to children resources.
-                                type: object
-                              labels:
-                                additionalProperties:
-                                  type: string
-                                description: Labels to be added to children resources.
-                                type: object
-                            type: object
-                          resources:
-                            description: VolumeResourceRequirements describes the
-                              storage resource requirements for a volume.
-                            properties:
-                              limits:
-                                additionalProperties:
-                                  anyOf:
-                                  - type: integer
-                                  - type: string
-                                  pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
-                                  x-kubernetes-int-or-string: true
-                                description: |-
-                                  Limits describes the maximum amount of compute resources allowed.
-                                  More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
-                                type: object
-                              requests:
-                                additionalProperties:
-                                  anyOf:
-                                  - type: integer
-                                  - type: string
-                                  pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
-                                  x-kubernetes-int-or-string: true
-                                description: |-
-                                  Requests describes the minimum amount of compute resources required.
-                                  If Requests is omitted for a container, it defaults to Limits if that is explicitly specified,
-                                  otherwise to an implementation-defined value. Requests cannot exceed Limits.
-                                  More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
-                                type: object
-                            type: object
-                          selector:
-                            description: |-
-                              A label selector is a label query over a set of resources. The result of matchLabels and
-                              matchExpressions are ANDed. An empty label selector matches all objects. A null
-                              label selector matches no objects.
-                            properties:
-                              matchExpressions:
-                                description: matchExpressions is a list of label selector
-                                  requirements. The requirements are ANDed.
-                                items:
-                                  description: |-
-                                    A label selector requirement is a selector that contains values, a key, and an operator that
-                                    relates the key and values.
-                                  properties:
-                                    key:
-                                      description: key is the label key that the selector
-                                        applies to.
-                                      type: string
-                                    operator:
-                                      description: |-
-                                        operator represents a key's relationship to a set of values.
-                                        Valid operators are In, NotIn, Exists and DoesNotExist.
-                                      type: string
-                                    values:
-                                      description: |-
-                                        values is an array of string values. If the operator is In or NotIn,
-                                        the values array must be non-empty. If the operator is Exists or DoesNotExist,
-                                        the values array must be empty. This array is replaced during a strategic
-                                        merge patch.
-                                      items:
-                                        type: string
-                                      type: array
-                                      x-kubernetes-list-type: atomic
-                                  required:
-                                  - key
-                                  - operator
-                                  type: object
-                                type: array
-                                x-kubernetes-list-type: atomic
-                              matchLabels:
-                                additionalProperties:
-                                  type: string
-                                description: |-
-                                  matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
-                                  map is equivalent to an element of matchExpressions, whose key field is "key", the
-                                  operator is "In", and the values array contains only "value". The requirements are ANDed.
-                                type: object
-                            type: object
-                            x-kubernetes-map-type: atomic
-                          storageClassName:
-                            type: string
-                        type: object
-                    type: object
-                  connection:
-                    description: Connection provides a template to define the Connection
-                      for MaxScale.
-                    properties:
-                      healthCheck:
-                        description: HealthCheck to be used in the Connection.
-                        properties:
-                          interval:
-                            description: Interval used to perform health checks.
-                            type: string
-                          retryInterval:
-                            description: RetryInterval is the interval used to perform
-                              health check retries.
-                            type: string
-                        type: object
-                      params:
-                        additionalProperties:
-                          type: string
-                        description: Params to be used in the Connection.
-                        type: object
-                      port:
-                        description: Port to connect to. If not provided, it defaults
-                          to the MariaDB port or to the first MaxScale listener.
-                        format: int32
-                        type: integer
-                      secretName:
-                        description: SecretName to be used in the Connection.
-                        type: string
-                      secretTemplate:
-                        description: SecretTemplate to be used in the Connection.
-                        properties:
-                          databaseKey:
-                            description: DatabaseKey to be used in the Secret.
-                            type: string
-                          format:
-                            description: Format to be used in the Secret.
-                            type: string
-                          hostKey:
-                            description: HostKey to be used in the Secret.
-                            type: string
-                          key:
-                            description: Key to be used in the Secret.
-                            type: string
-                          metadata:
-                            description: Metadata to be added to the Secret object.
-                            properties:
-                              annotations:
-                                additionalProperties:
-                                  type: string
-                                description: Annotations to be added to children resources.
-                                type: object
-                              labels:
-                                additionalProperties:
-                                  type: string
-                                description: Labels to be added to children resources.
-                                type: object
-                            type: object
-                          passwordKey:
-                            description: PasswordKey to be used in the Secret.
-                            type: string
-                          portKey:
-                            description: PortKey to be used in the Secret.
-                            type: string
-                          usernameKey:
-                            description: UsernameKey to be used in the Secret.
-                            type: string
-                        type: object
-                      serviceName:
-                        description: ServiceName to be used in the Connection.
-                        type: string
-                    type: object
-                  enabled:
-                    description: Enabled is a flag to enable a MaxScale instance to
-                      be used with the current MariaDB.
-                    type: boolean
-                  guiKubernetesService:
-                    description: GuiKubernetesService define a template for a Kubernetes
-                      Service object to connect to MaxScale's GUI.
-                    properties:
-                      allocateLoadBalancerNodePorts:
-                        description: AllocateLoadBalancerNodePorts Service field.
-                        type: boolean
-                      externalTrafficPolicy:
-                        description: ExternalTrafficPolicy Service field.
-                        type: string
-                      loadBalancerIP:
-                        description: LoadBalancerIP Service field.
-                        type: string
-                      loadBalancerSourceRanges:
-                        description: LoadBalancerSourceRanges Service field.
-                        items:
-                          type: string
-                        type: array
-                      metadata:
-                        description: Metadata to be added to the Service metadata.
-                        properties:
-                          annotations:
-                            additionalProperties:
-                              type: string
-                            description: Annotations to be added to children resources.
-                            type: object
-                          labels:
-                            additionalProperties:
-                              type: string
-                            description: Labels to be added to children resources.
-                            type: object
-                        type: object
-                      sessionAffinity:
-                        description: SessionAffinity Service field.
-                        type: string
-                      type:
-                        default: ClusterIP
-                        description: Type is the Service type. One of `ClusterIP`,
-                          `NodePort` or `LoadBalancer`. If not defined, it defaults
-                          to `ClusterIP`.
-                        enum:
-                        - ClusterIP
-                        - NodePort
-                        - LoadBalancer
-                        type: string
-                    type: object
-                  image:
-                    description: |-
-                      Image name to be used by the MaxScale instances. The supported format is `<image>:<tag>`.
-                      Only MariaDB official images are supported.
-                    type: string
-                  imagePullPolicy:
-                    description: ImagePullPolicy is the image pull policy. One of
-                      `Always`, `Never` or `IfNotPresent`. If not defined, it defaults
-                      to `IfNotPresent`.
-                    enum:
-                    - Always
-                    - Never
-                    - IfNotPresent
-                    type: string
-                  kubernetesService:
-                    description: KubernetesService defines a template for a Kubernetes
-                      Service object to connect to MaxScale.
-                    properties:
-                      allocateLoadBalancerNodePorts:
-                        description: AllocateLoadBalancerNodePorts Service field.
-                        type: boolean
-                      externalTrafficPolicy:
-                        description: ExternalTrafficPolicy Service field.
-                        type: string
-                      loadBalancerIP:
-                        description: LoadBalancerIP Service field.
-                        type: string
-                      loadBalancerSourceRanges:
-                        description: LoadBalancerSourceRanges Service field.
-                        items:
-                          type: string
-                        type: array
-                      metadata:
-                        description: Metadata to be added to the Service metadata.
-                        properties:
-                          annotations:
-                            additionalProperties:
-                              type: string
-                            description: Annotations to be added to children resources.
-                            type: object
-                          labels:
-                            additionalProperties:
-                              type: string
-                            description: Labels to be added to children resources.
-                            type: object
-                        type: object
-                      sessionAffinity:
-                        description: SessionAffinity Service field.
-                        type: string
-                      type:
-                        default: ClusterIP
-                        description: Type is the Service type. One of `ClusterIP`,
-                          `NodePort` or `LoadBalancer`. If not defined, it defaults
-                          to `ClusterIP`.
-                        enum:
-                        - ClusterIP
-                        - NodePort
-                        - LoadBalancer
-                        type: string
-                    type: object
-                  metrics:
-                    description: Metrics configures metrics and how to scrape them.
-                    properties:
-                      enabled:
-                        description: Enabled is a flag to enable Metrics
-                        type: boolean
-                      exporter:
-                        description: Exporter defines the metrics exporter container.
-                        properties:
-                          affinity:
-                            description: Affinity to be used in the Pod.
-                            properties:
-                              antiAffinityEnabled:
-                                description: |-
-                                  AntiAffinityEnabled configures PodAntiAffinity so each Pod is scheduled in a different Node, enabling HA.
-                                  Make sure you have at least as many Nodes available as the replicas to not end up with unscheduled Pods.
-                                type: boolean
-                              nodeAffinity:
-                                description: 'Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#nodeaffinity-v1-core'
-                                properties:
-                                  preferredDuringSchedulingIgnoredDuringExecution:
-                                    items:
-                                      description: 'Refer to the Kubernetes docs:
-                                        https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#preferredschedulingterm-v1-core'
-                                      properties:
-                                        preference:
-                                          description: 'Refer to the Kubernetes docs:
-                                            https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#nodeselectorterm-v1-core'
-                                          properties:
-                                            matchExpressions:
-                                              items:
-                                                description: 'Refer to the Kubernetes
-                                                  docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#nodeselectorrequirement-v1-core'
-                                                properties:
-                                                  key:
-                                                    type: string
-                                                  operator:
-                                                    description: |-
-                                                      A node selector operator is the set of operators that can be used in
-                                                      a node selector requirement.
-                                                    type: string
-                                                  values:
-                                                    items:
-                                                      type: string
-                                                    type: array
-                                                    x-kubernetes-list-type: atomic
-                                                required:
-                                                - key
-                                                - operator
-                                                type: object
-                                              type: array
-                                              x-kubernetes-list-type: atomic
-                                            matchFields:
-                                              items:
-                                                description: 'Refer to the Kubernetes
-                                                  docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#nodeselectorrequirement-v1-core'
-                                                properties:
-                                                  key:
-                                                    type: string
-                                                  operator:
-                                                    description: |-
-                                                      A node selector operator is the set of operators that can be used in
-                                                      a node selector requirement.
-                                                    type: string
-                                                  values:
-                                                    items:
-                                                      type: string
-                                                    type: array
-                                                    x-kubernetes-list-type: atomic
-                                                required:
-                                                - key
-                                                - operator
-                                                type: object
-                                              type: array
-                                              x-kubernetes-list-type: atomic
-                                          type: object
-                                        weight:
-                                          format: int32
-                                          type: integer
-                                      required:
-                                      - preference
-                                      - weight
-                                      type: object
-                                    type: array
-                                    x-kubernetes-list-type: atomic
-                                  requiredDuringSchedulingIgnoredDuringExecution:
-                                    description: 'Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#nodeselector-v1-core'
-                                    properties:
-                                      nodeSelectorTerms:
-                                        items:
-                                          description: 'Refer to the Kubernetes docs:
-                                            https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#nodeselectorterm-v1-core'
-                                          properties:
-                                            matchExpressions:
-                                              items:
-                                                description: 'Refer to the Kubernetes
-                                                  docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#nodeselectorrequirement-v1-core'
-                                                properties:
-                                                  key:
-                                                    type: string
-                                                  operator:
-                                                    description: |-
-                                                      A node selector operator is the set of operators that can be used in
-                                                      a node selector requirement.
-                                                    type: string
-                                                  values:
-                                                    items:
-                                                      type: string
-                                                    type: array
-                                                    x-kubernetes-list-type: atomic
-                                                required:
-                                                - key
-                                                - operator
-                                                type: object
-                                              type: array
-                                              x-kubernetes-list-type: atomic
-                                            matchFields:
-                                              items:
-                                                description: 'Refer to the Kubernetes
-                                                  docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#nodeselectorrequirement-v1-core'
-                                                properties:
-                                                  key:
-                                                    type: string
-                                                  operator:
-                                                    description: |-
-                                                      A node selector operator is the set of operators that can be used in
-                                                      a node selector requirement.
-                                                    type: string
-                                                  values:
-                                                    items:
-                                                      type: string
-                                                    type: array
-                                                    x-kubernetes-list-type: atomic
-                                                required:
-                                                - key
-                                                - operator
-                                                type: object
-                                              type: array
-                                              x-kubernetes-list-type: atomic
-                                          type: object
-                                        type: array
-                                        x-kubernetes-list-type: atomic
-                                    required:
-                                    - nodeSelectorTerms
-                                    type: object
-                                type: object
-                              podAntiAffinity:
-                                description: 'Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#podantiaffinity-v1-core.'
-                                properties:
-                                  preferredDuringSchedulingIgnoredDuringExecution:
-                                    items:
-                                      description: 'Refer to the Kubernetes docs:
-                                        https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#weightedpodaffinityterm-v1-core.'
-                                      properties:
-                                        podAffinityTerm:
-                                          description: 'Refer to the Kubernetes docs:
-                                            https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#podaffinityterm-v1-core.'
-                                          properties:
-                                            labelSelector:
-                                              description: 'Refer to the Kubernetes
-                                                docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#labelselector-v1-meta'
-                                              properties:
-                                                matchExpressions:
-                                                  items:
-                                                    description: 'Refer to the Kubernetes
-                                                      docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#labelselectorrequirement-v1-meta'
-                                                    properties:
-                                                      key:
-                                                        type: string
-                                                      operator:
-                                                        description: A label selector
-                                                          operator is the set of operators
-                                                          that can be used in a selector
-                                                          requirement.
-                                                        type: string
-                                                      values:
-                                                        items:
-                                                          type: string
-                                                        type: array
-                                                        x-kubernetes-list-type: atomic
-                                                    required:
-                                                    - key
-                                                    - operator
-                                                    type: object
-                                                  type: array
-                                                  x-kubernetes-list-type: atomic
-                                                matchLabels:
-                                                  additionalProperties:
-                                                    type: string
-                                                  type: object
-                                              type: object
-                                            topologyKey:
-                                              type: string
-                                          required:
-                                          - topologyKey
-                                          type: object
-                                        weight:
-                                          format: int32
-                                          type: integer
-                                      required:
-                                      - podAffinityTerm
-                                      - weight
-                                      type: object
-                                    type: array
-                                    x-kubernetes-list-type: atomic
-                                  requiredDuringSchedulingIgnoredDuringExecution:
-                                    items:
-                                      description: 'Refer to the Kubernetes docs:
-                                        https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#podaffinityterm-v1-core.'
-                                      properties:
-                                        labelSelector:
-                                          description: 'Refer to the Kubernetes docs:
-                                            https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#labelselector-v1-meta'
-                                          properties:
-                                            matchExpressions:
-                                              items:
-                                                description: 'Refer to the Kubernetes
-                                                  docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#labelselectorrequirement-v1-meta'
-                                                properties:
-                                                  key:
-                                                    type: string
-                                                  operator:
-                                                    description: A label selector
-                                                      operator is the set of operators
-                                                      that can be used in a selector
-                                                      requirement.
-                                                    type: string
-                                                  values:
-                                                    items:
-                                                      type: string
-                                                    type: array
-                                                    x-kubernetes-list-type: atomic
-                                                required:
-                                                - key
-                                                - operator
-                                                type: object
-                                              type: array
-                                              x-kubernetes-list-type: atomic
-                                            matchLabels:
-                                              additionalProperties:
-                                                type: string
-                                              type: object
-                                          type: object
-                                        topologyKey:
-                                          type: string
-                                      required:
-                                      - topologyKey
-                                      type: object
-                                    type: array
-                                    x-kubernetes-list-type: atomic
-                                type: object
-                            type: object
-                          args:
-                            description: Args to be used in the Container.
-                            items:
-                              type: string
-                            type: array
-                          image:
-                            description: Image name to be used as metrics exporter.
-                              The supported format is `<image>:<tag>`.
-                            type: string
-                          imagePullPolicy:
-                            description: ImagePullPolicy is the image pull policy.
-                              One of `Always`, `Never` or `IfNotPresent`. If not defined,
-                              it defaults to `IfNotPresent`.
-                            enum:
-                            - Always
-                            - Never
-                            - IfNotPresent
-                            type: string
-                          imagePullSecrets:
-                            description: ImagePullSecrets is the list of pull Secrets
-                              to be used to pull the image.
-                            items:
-                              description: 'Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#localobjectreference-v1-core.'
-                              properties:
-                                name:
-                                  default: ""
-                                  type: string
-                              type: object
-                            type: array
-                          nodeSelector:
-                            additionalProperties:
-                              type: string
-                            description: NodeSelector to be used in the Pod.
-                            type: object
-                          podMetadata:
-                            description: PodMetadata defines extra metadata for the
-                              Pod.
-                            properties:
-                              annotations:
-                                additionalProperties:
-                                  type: string
-                                description: Annotations to be added to children resources.
-                                type: object
-                              labels:
-                                additionalProperties:
-                                  type: string
-                                description: Labels to be added to children resources.
-                                type: object
-                            type: object
-                          podSecurityContext:
-                            description: SecurityContext holds pod-level security
-                              attributes and common container settings.
-                            properties:
-                              appArmorProfile:
-                                description: AppArmorProfile defines a pod or container's
-                                  AppArmor settings.
-                                properties:
-                                  localhostProfile:
-                                    description: |-
-                                      localhostProfile indicates a profile loaded on the node that should be used.
-                                      The profile must be preconfigured on the node to work.
-                                      Must match the loaded name of the profile.
-                                      Must be set if and only if type is "Localhost".
-                                    type: string
-                                  type:
-                                    description: |-
-                                      type indicates which kind of AppArmor profile will be applied.
-                                      Valid options are:
-                                        Localhost - a profile pre-loaded on the node.
-                                        RuntimeDefault - the container runtime's default profile.
-                                        Unconfined - no AppArmor enforcement.
-                                    type: string
-                                required:
-                                - type
-                                type: object
-                              fsGroup:
-                                format: int64
-                                type: integer
-                              fsGroupChangePolicy:
-                                description: |-
-                                  PodFSGroupChangePolicy holds policies that will be used for applying fsGroup to a volume
-                                  when volume is mounted.
-                                type: string
-                              runAsGroup:
-                                format: int64
-                                type: integer
-                              runAsNonRoot:
-                                type: boolean
-                              runAsUser:
-                                format: int64
-                                type: integer
-                              seLinuxOptions:
-                                description: SELinuxOptions are the labels to be applied
-                                  to the container
-                                properties:
-                                  level:
-                                    description: Level is SELinux level label that
-                                      applies to the container.
-                                    type: string
-                                  role:
-                                    description: Role is a SELinux role label that
-                                      applies to the container.
-                                    type: string
-                                  type:
-                                    description: Type is a SELinux type label that
-                                      applies to the container.
-                                    type: string
-                                  user:
-                                    description: User is a SELinux user label that
-                                      applies to the container.
-                                    type: string
-                                type: object
-                              seccompProfile:
-                                description: |-
-                                  SeccompProfile defines a pod/container's seccomp profile settings.
-                                  Only one profile source may be set.
-                                properties:
-                                  localhostProfile:
-                                    description: |-
-                                      localhostProfile indicates a profile defined in a file on the node should be used.
-                                      The profile must be preconfigured on the node to work.
-                                      Must be a descending path, relative to the kubelet's configured seccomp profile location.
-                                      Must be set if type is "Localhost". Must NOT be set for any other type.
-                                    type: string
-                                  type:
-                                    description: |-
-                                      type indicates which kind of seccomp profile will be applied.
-                                      Valid options are:
-
-                                      Localhost - a profile defined in a file on the node should be used.
-                                      RuntimeDefault - the container runtime default profile should be used.
-                                      Unconfined - no profile should be applied.
-                                    type: string
-                                required:
-                                - type
-                                type: object
-                              supplementalGroups:
-                                items:
-                                  format: int64
-                                  type: integer
-                                type: array
-                                x-kubernetes-list-type: atomic
-                            type: object
-                          port:
-                            description: Port where the exporter will be listening
-                              for connections.
-                            format: int32
-                            type: integer
-                          priorityClassName:
-                            description: PriorityClassName to be used in the Pod.
-                            type: string
-                          resources:
-                            description: Resources describes the compute resource
-                              requirements.
-                            properties:
-                              limits:
-                                additionalProperties:
-                                  anyOf:
-                                  - type: integer
-                                  - type: string
-                                  pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
-                                  x-kubernetes-int-or-string: true
-                                description: ResourceList is a set of (resource name,
-                                  quantity) pairs.
-                                type: object
-                              requests:
-                                additionalProperties:
-                                  anyOf:
-                                  - type: integer
-                                  - type: string
-                                  pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
-                                  x-kubernetes-int-or-string: true
-                                description: ResourceList is a set of (resource name,
-                                  quantity) pairs.
-                                type: object
-                            type: object
-                          securityContext:
-                            description: SecurityContext holds container-level security
-                              attributes.
-                            properties:
-                              allowPrivilegeEscalation:
-                                type: boolean
-                              capabilities:
-                                description: Adds and removes POSIX capabilities from
-                                  running containers.
-                                properties:
-                                  add:
-                                    description: Added capabilities
-                                    items:
-                                      description: Capability represent POSIX capabilities
-                                        type
-                                      type: string
-                                    type: array
-                                    x-kubernetes-list-type: atomic
-                                  drop:
-                                    description: Removed capabilities
-                                    items:
-                                      description: Capability represent POSIX capabilities
-                                        type
-                                      type: string
-                                    type: array
-                                    x-kubernetes-list-type: atomic
-                                type: object
-                              privileged:
-                                type: boolean
-                              readOnlyRootFilesystem:
-                                type: boolean
-                              runAsGroup:
-                                format: int64
-                                type: integer
-                              runAsNonRoot:
-                                type: boolean
-                              runAsUser:
-                                format: int64
-                                type: integer
-                            type: object
-                          tolerations:
-                            description: Tolerations to be used in the Pod.
-                            items:
-                              description: |-
-                                The pod this Toleration is attached to tolerates any taint that matches
-                                the triple <key,value,effect> using the matching operator <operator>.
-                              properties:
-                                effect:
-                                  description: |-
-                                    Effect indicates the taint effect to match. Empty means match all taint effects.
-                                    When specified, allowed values are NoSchedule, PreferNoSchedule and NoExecute.
-                                  type: string
-                                key:
-                                  description: |-
-                                    Key is the taint key that the toleration applies to. Empty means match all taint keys.
-                                    If the key is empty, operator must be Exists; this combination means to match all values and all keys.
-                                  type: string
-                                operator:
-                                  description: |-
-                                    Operator represents a key's relationship to the value.
-                                    Valid operators are Exists, Equal, Lt, and Gt. Defaults to Equal.
-                                    Exists is equivalent to wildcard for value, so that a pod can
-                                    tolerate all taints of a particular category.
-                                    Lt and Gt perform numeric comparisons (requires feature gate TaintTolerationComparisonOperators).
-                                  type: string
-                                tolerationSeconds:
-                                  description: |-
-                                    TolerationSeconds represents the period of time the toleration (which must be
-                                    of effect NoExecute, otherwise this field is ignored) tolerates the taint. By default,
-                                    it is not set, which means tolerate the taint forever (do not evict). Zero and
-                                    negative values will be treated as 0 (evict immediately) by the system.
-                                  format: int64
-                                  type: integer
-                                value:
-                                  description: |-
-                                    Value is the taint value the toleration matches to.
-                                    If the operator is Exists, the value should be empty, otherwise just a regular string.
-                                  type: string
-                              type: object
-                            type: array
-                        type: object
-                      serviceMonitor:
-                        description: ServiceMonitor defines the ServiceMonior object.
-                        properties:
-                          interval:
-                            description: Interval for scraping metrics.
-                            type: string
-                          jobLabel:
-                            description: JobLabel to add to the ServiceMonitor object.
-                            type: string
-                          prometheusRelease:
-                            description: PrometheusRelease is the release label to
-                              add to the ServiceMonitor object.
-                            type: string
-                          scrapeTimeout:
-                            description: ScrapeTimeout defines the timeout for scraping
-                              metrics.
-                            type: string
-                        type: object
-                    type: object
-                  monitor:
-                    description: Monitor monitors MariaDB server instances.
-                    properties:
-                      cooperativeMonitoring:
-                        description: CooperativeMonitoring enables coordination between
-                          multiple MaxScale instances running monitors. It is defaulted
-                          when HA is enabled.
-                        enum:
-                        - majority_of_all
-                        - majority_of_running
-                        type: string
-                      interval:
-                        description: Interval used to monitor MariaDB servers. It
-                          is defaulted if not provided.
-                        type: string
-                      module:
-                        description: Module is the module to use to monitor MariaDB
-                          servers. It is mandatory when no MariaDB reference is provided.
-                        type: string
-                      name:
-                        description: Name is the identifier of the monitor. It is
-                          defaulted if not provided.
-                        type: string
-                      params:
-                        additionalProperties:
-                          type: string
-                        description: |-
-                          Params defines extra parameters to pass to the monitor.
-                          Any parameter supported by MaxScale may be specified here. See reference:
-                          https://mariadb.com/kb/en/mariadb-maxscale-2308-common-monitor-parameters/.
-                          Monitor specific parameter are also supported:
-                          https://mariadb.com/kb/en/mariadb-maxscale-2308-galera-monitor/#galera-monitor-optional-parameters.
-                          https://mariadb.com/kb/en/mariadb-maxscale-2308-mariadb-monitor/#configuration.
-                        type: object
-                      suspend:
-                        default: false
-                        description: |-
-                          Suspend indicates whether the current resource should be suspended or not.
-                          This can be useful for maintenance, as disabling the reconciliation prevents the operator from interfering with user operations during maintenance activities.
-                        type: boolean
-                    type: object
-                  podDisruptionBudget:
-                    description: PodDisruptionBudget defines the budget for replica
-                      availability.
-                    properties:
-                      maxUnavailable:
-                        anyOf:
-                        - type: integer
-                        - type: string
-                        description: MaxUnavailable defines the number of maximum
-                          unavailable Pods.
-                        x-kubernetes-int-or-string: true
-                      minAvailable:
-                        anyOf:
-                        - type: integer
-                        - type: string
-                        description: MinAvailable defines the number of minimum available
-                          Pods.
-                        x-kubernetes-int-or-string: true
-                    type: object
-                  replicas:
-                    description: Replicas indicates the number of desired instances.
-                    format: int32
-                    type: integer
-                  requeueInterval:
-                    description: RequeueInterval is used to perform requeue reconciliations.
-                    type: string
-                  services:
-                    description: Services define how the traffic is forwarded to the
-                      MariaDB servers.
-                    items:
-                      description: Services define how the traffic is forwarded to
-                        the MariaDB servers.
-                      properties:
-                        listener:
-                          description: MaxScaleListener defines how the MaxScale server
-                            will listen for connections.
-                          properties:
-                            name:
-                              description: Name is the identifier of the listener.
-                                It is defaulted if not provided
-                              type: string
-                            params:
-                              additionalProperties:
-                                type: string
-                              description: |-
-                                Params defines extra parameters to pass to the listener.
-                                Any parameter supported by MaxScale may be specified here. See reference:
-                                https://mariadb.com/kb/en/mariadb-maxscale-2308-mariadb-maxscale-configuration-guide/#listener_1.
-                              type: object
-                            port:
-                              description: Port is the network port where the MaxScale
-                                server will listen.
-                              format: int32
-                              type: integer
-                            protocol:
-                              description: Protocol is the MaxScale protocol to use
-                                when communicating with the client. If not provided,
-                                it defaults to MariaDBProtocol.
-                              type: string
-                            suspend:
-                              default: false
-                              description: |-
-                                Suspend indicates whether the current resource should be suspended or not.
-                                This can be useful for maintenance, as disabling the reconciliation prevents the operator from interfering with user operations during maintenance activities.
-                              type: boolean
-                          required:
-                          - port
-                          type: object
-                        name:
-                          description: Name is the identifier of the MaxScale service.
-                          type: string
-                        params:
-                          additionalProperties:
-                            type: string
-                          description: |-
-                            Params defines extra parameters to pass to the service.
-                            Any parameter supported by MaxScale may be specified here. See reference:
-                            https://mariadb.com/kb/en/mariadb-maxscale-2308-mariadb-maxscale-configuration-guide/#service_1.
-                            Router specific parameter are also supported:
-                            https://mariadb.com/kb/en/mariadb-maxscale-2308-readwritesplit/#configuration.
-                            https://mariadb.com/kb/en/mariadb-maxscale-2308-readconnroute/#configuration.
-                          type: object
-                        router:
-                          description: Router is the type of router to use.
-                          enum:
-                          - readwritesplit
-                          - readconnroute
-                          type: string
-                        suspend:
-                          default: false
-                          description: |-
-                            Suspend indicates whether the current resource should be suspended or not.
-                            This can be useful for maintenance, as disabling the reconciliation prevents the operator from interfering with user operations during maintenance activities.
-                          type: boolean
-                      required:
-                      - listener
-                      - name
-                      - router
-                      type: object
-                    type: array
-                  tls:
-                    description: TLS defines the PKI to be used with MaxScale.
-                    properties:
-                      adminCASecretRef:
-                        description: |-
-                          AdminCASecretRef is a reference to a Secret containing the admin certificate authority keypair. It is used to establish trust and issue certificates for the MaxScale's administrative REST API and GUI.
-                          One of:
-                          - Secret containing both the 'ca.crt' and 'ca.key' keys. This allows you to bring your own CA to Kubernetes to issue certificates.
-                          - Secret containing only the 'ca.crt' in order to establish trust. In this case, either adminCertSecretRef or adminCertIssuerRef fields must be provided.
-                          If not provided, a self-signed CA will be provisioned to issue the server certificate.
-                        properties:
-                          name:
-                            default: ""
-                            type: string
-                        type: object
-                      adminCertConfig:
-                        description: |-
-                          AdminCertConfig allows configuring the admin certificates, either issued by the operator or cert-manager.
-                          If not set, the default settings will be used.
-                        properties:
-                          caLifetime:
-                            description: CALifetime defines the CA certificate validity.
-                            type: string
-                          certLifetime:
-                            description: CertLifetime defines the certificate validity.
-                            type: string
-                          privateKeyAlgorithm:
-                            description: |-
-                              PrivateKeyAlgorithm is the algorithm to be used for the CA and leaf certificate private keys.
-                              One of: ECDSA or RSA
-                            enum:
-                            - ECDSA
-                            - RSA
-                            type: string
-                          privateKeySize:
-                            description: |-
-                              PrivateKeyAlgorithm is the key size to be used for the CA and leaf certificate private keys.
-                              Supported values: ECDSA(256, 384, 521), RSA(2048, 3072, 4096)
-                            type: integer
-                        type: object
-                      adminCertIssuerRef:
-                        description: |-
-                          AdminCertIssuerRef is a reference to a cert-manager issuer object used to issue the MaxScale's administrative REST API and GUI certificate. cert-manager must be installed previously in the cluster.
-                          It is mutually exclusive with adminCertSecretRef.
-                          By default, the Secret field 'ca.crt' provisioned by cert-manager will be added to the trust chain. A custom trust bundle may be specified via adminCASecretRef.
-                        properties:
-                          group:
-                            description: Group of the resource being referred to.
-                            type: string
-                          kind:
-                            description: Kind of the resource being referred to.
-                            type: string
-                          name:
-                            description: Name of the resource being referred to.
-                            type: string
-                        required:
-                        - name
-                        type: object
-                      adminCertSecretRef:
-                        description: AdminCertSecretRef is a reference to a TLS Secret
-                          used by the MaxScale's administrative REST API and GUI.
-                        properties:
-                          name:
-                            default: ""
-                            type: string
-                        type: object
-                      adminVersions:
-                        description: |-
-                          Versions specifies the supported TLS versions in the MaxScale REST API.
-                          By default, the MaxScale's default supported versions are used. See: https://mariadb.com/kb/en/mariadb-maxscale-25-mariadb-maxscale-configuration-guide/#admin_ssl_version
-                        items:
-                          enum:
-                          - TLSv10
-                          - TLSv11
-                          - TLSv12
-                          - TLSv13
-                          - MAX
-                          type: string
-                        type: array
-                      enabled:
-                        description: |-
-                          Enabled indicates whether TLS is enabled, determining if certificates should be issued and mounted to the MaxScale instance.
-                          It is enabled by default when the referred MariaDB instance (via mariaDbRef) has TLS enabled and enforced.
-                        type: boolean
-                      listenerCASecretRef:
-                        description: |-
-                          ListenerCASecretRef is a reference to a Secret containing the listener certificate authority keypair. It is used to establish trust and issue certificates for the MaxScale's listeners.
-                          One of:
-                          - Secret containing both the 'ca.crt' and 'ca.key' keys. This allows you to bring your own CA to Kubernetes to issue certificates.
-                          - Secret containing only the 'ca.crt' in order to establish trust. In this case, either listenerCertSecretRef or listenerCertIssuerRef fields must be provided.
-                          If not provided, a self-signed CA will be provisioned to issue the listener certificate.
-                        properties:
-                          name:
-                            default: ""
-                            type: string
-                        type: object
-                      listenerCertConfig:
-                        description: |-
-                          ListenerCertConfig allows configuring the listener certificates, either issued by the operator or cert-manager.
-                          If not set, the default settings will be used.
-                        properties:
-                          caLifetime:
-                            description: CALifetime defines the CA certificate validity.
-                            type: string
-                          certLifetime:
-                            description: CertLifetime defines the certificate validity.
-                            type: string
-                          privateKeyAlgorithm:
-                            description: |-
-                              PrivateKeyAlgorithm is the algorithm to be used for the CA and leaf certificate private keys.
-                              One of: ECDSA or RSA
-                            enum:
-                            - ECDSA
-                            - RSA
-                            type: string
-                          privateKeySize:
-                            description: |-
-                              PrivateKeyAlgorithm is the key size to be used for the CA and leaf certificate private keys.
-                              Supported values: ECDSA(256, 384, 521), RSA(2048, 3072, 4096)
-                            type: integer
-                        type: object
-                      listenerCertIssuerRef:
-                        description: |-
-                          ListenerCertIssuerRef is a reference to a cert-manager issuer object used to issue the MaxScale's listeners certificate. cert-manager must be installed previously in the cluster.
-                          It is mutually exclusive with listenerCertSecretRef.
-                          By default, the Secret field 'ca.crt' provisioned by cert-manager will be added to the trust chain. A custom trust bundle may be specified via listenerCASecretRef.
-                        properties:
-                          group:
-                            description: Group of the resource being referred to.
-                            type: string
-                          kind:
-                            description: Kind of the resource being referred to.
-                            type: string
-                          name:
-                            description: Name of the resource being referred to.
-                            type: string
-                        required:
-                        - name
-                        type: object
-                      listenerCertSecretRef:
-                        description: ListenerCertSecretRef is a reference to a TLS
-                          Secret used by the MaxScale's listeners.
-                        properties:
-                          name:
-                            default: ""
-                            type: string
-                        type: object
-                      replicationSSLEnabled:
-                        description: |-
-                          ReplicationSSLEnabled specifies whether the replication SSL is enabled. If enabled, the SSL options will be added to the server configuration.
-                          It is enabled by default when the referred MariaDB instance (via mariaDbRef) has replication enabled.
-                          If the MariaDB servers are manually provided by the user via the 'servers' field, this must be set by the user as well.
-                        type: boolean
-                      serverCASecretRef:
-                        description: |-
-                          ServerCASecretRef is a reference to a Secret containing the MariaDB server CA certificates. It is used to establish trust with MariaDB servers.
-                          The Secret should contain a 'ca.crt' key in order to establish trust.
-                          If not provided, and the reference to a MariaDB resource is set (mariaDbRef), it will be defaulted to the referred MariaDB CA bundle.
-                        properties:
-                          name:
-                            default: ""
-                            type: string
-                        type: object
-                      serverCertSecretRef:
-                        description: |-
-                          ServerCertSecretRef is a reference to a TLS Secret used by MaxScale to connect to the MariaDB servers.
-                          If not provided, and the reference to a MariaDB resource is set (mariaDbRef), it will be defaulted to the referred MariaDB client certificate (clientCertSecretRef).
-                        properties:
-                          name:
-                            default: ""
-                            type: string
-                        type: object
-                      serverVersions:
-                        description: |-
-                          ServerVersions specifies the supported TLS versions in both the servers and listeners managed by this MaxScale instance.
-                          By default, the MaxScale's default supported versions are used. See: https://mariadb.com/kb/en/mariadb-maxscale-25-mariadb-maxscale-configuration-guide/#ssl_version.
-                        items:
-                          enum:
-                          - TLSv10
-                          - TLSv11
-                          - TLSv12
-                          - TLSv13
-                          - MAX
-                          type: string
-                        type: array
-                      verifyPeerCertificate:
-                        description: |-
-                          VerifyPeerCertificate specifies whether the peer certificate's signature should be validated against the CA.
-                          It is disabled by default.
-                        type: boolean
-                      verifyPeerHost:
-                        description: |-
-                          VerifyPeerHost specifies whether the peer certificate's SANs should match the peer host.
-                          It is disabled by default.
-                        type: boolean
-                    type: object
-                  updateStrategy:
-                    description: UpdateStrategy defines the update strategy for the
-                      StatefulSet object.
-                    properties:
-                      rollingUpdate:
-                        description: RollingUpdate is used to communicate parameters
-                          when Type is RollingUpdateStatefulSetStrategyType.
-                        properties:
-                          maxUnavailable:
-                            anyOf:
-                            - type: integer
-                            - type: string
-                            description: |-
-                              The maximum number of pods that can be unavailable during the update.
-                              Value can be an absolute number (ex: 5) or a percentage of desired pods (ex: 10%).
-                              Absolute number is calculated from percentage by rounding up. This can not be 0.
-                              Defaults to 1. This field is beta-level and is enabled by default. The field applies to all pods in the range 0 to
-                              Replicas-1. That means if there is any unavailable pod in the range 0 to Replicas-1, it
-                              will be counted towards MaxUnavailable.
-                              This setting might not be effective for the OrderedReady podManagementPolicy. That policy ensures pods are created and become ready one at a time.
-                            x-kubernetes-int-or-string: true
-                          partition:
-                            description: |-
-                              Partition indicates the ordinal at which the StatefulSet should be partitioned
-                              for updates. During a rolling update, all pods from ordinal Replicas-1 to
-                              Partition are updated. All pods from ordinal Partition-1 to 0 remain untouched.
-                              This is helpful in being able to do a canary based deployment. The default value is 0.
-                            format: int32
-                            type: integer
-                        type: object
-                      type:
-                        description: |-
-                          Type indicates the type of the StatefulSetUpdateStrategy.
-                          Default is RollingUpdate.
-                        type: string
-                    type: object
-                type: object
               maxScaleRef:
                 description: |-
                   MaxScaleRef is a reference to a MaxScale resource to be used with the current MariaDB.
-                  Providing this field implies delegating high availability tasks such as primary failover to MaxScale.
+                  Providing this reference implies delegating high availability tasks such as primary failover to MaxScale.
                 properties:
                   name:
                     type: string
@@ -6964,6 +5629,15 @@ spec:
                     type: array
                     x-kubernetes-list-type: atomic
                 type: object
+              pointInTimeRecoveryRef:
+                description: |-
+                  PointInTimeRecoveryRef is a reference to a PointInTimeRecovery resource to be used with the current MariaDB.
+                  Providing this reference implies configuring binary logs in the MariaDB instance and binary log archival in the sidecar agent.
+                properties:
+                  name:
+                    default: ""
+                    type: string
+                type: object
               port:
                 default: 3306
                 description: Port where the instances will be listening for connections.
@@ -7052,6 +5726,9 @@ spec:
                     type: boolean
                   externalTrafficPolicy:
                     description: ExternalTrafficPolicy Service field.
+                    type: string
+                  loadBalancerClass:
+                    description: LoadBalancerClass Service field.
                     type: string
                   loadBalancerIP:
                     description: LoadBalancerIP Service field.
@@ -8596,6 +7273,9 @@ spec:
                   externalTrafficPolicy:
                     description: ExternalTrafficPolicy Service field.
                     type: string
+                  loadBalancerClass:
+                    description: LoadBalancerClass Service field.
+                    type: string
                   loadBalancerIP:
                     description: LoadBalancerIP Service field.
                     type: string
@@ -8679,6 +7359,9 @@ spec:
                     type: boolean
                   externalTrafficPolicy:
                     description: ExternalTrafficPolicy Service field.
+                    type: string
+                  loadBalancerClass:
+                    description: LoadBalancerClass Service field.
                     type: string
                   loadBalancerIP:
                     description: LoadBalancerIP Service field.
@@ -9702,6 +8385,42 @@ spec:
                       file (grastate.dat).
                     type: object
                 type: object
+              pointInTimeRecovery:
+                description: PointInTimeRecovery is the status of the point-in-time-recovery
+                  process.
+                properties:
+                  gtidStrictModePaused:
+                    description: GtidStrictModePaused indicates that gtid_strict_mode
+                      has been temporarily paused to replay binlogs.
+                    type: boolean
+                  lastArchivedBinaryLog:
+                    description: LastArchivedBinaryLog is name of the last archived
+                      binary log.
+                    type: string
+                  lastArchivedGtid:
+                    description: LastArchivedGtid is the last archived GTID.
+                    type: string
+                  lastArchivedPosition:
+                    description: LastArchivedPosition is the position of last archived
+                      binary log event.
+                    format: int32
+                    type: integer
+                  lastArchivedTime:
+                    description: LastArchivedTime is the time of the last archived
+                      binary log event.
+                    format: date-time
+                    type: string
+                  serverId:
+                    description: ServerId identifies the server whose binary logs
+                      are being archived.
+                    format: int32
+                    type: integer
+                  storageReadyForArchival:
+                    description: StorageReadyForArchival indicates that the storage
+                      is ready for archival, meaning that the sidecar agent can start
+                      archiving the binary logs.
+                    type: boolean
+                type: object
               replicas:
                 description: Replicas indicates the number of current instances.
                 format: int32
@@ -10650,6 +9369,9 @@ spec:
                   externalTrafficPolicy:
                     description: ExternalTrafficPolicy Service field.
                     type: string
+                  loadBalancerClass:
+                    description: LoadBalancerClass Service field.
+                    type: string
                   loadBalancerIP:
                     description: LoadBalancerIP Service field.
                     type: string
@@ -10733,6 +9455,9 @@ spec:
                     type: boolean
                   externalTrafficPolicy:
                     description: ExternalTrafficPolicy Service field.
+                    type: string
+                  loadBalancerClass:
+                    description: LoadBalancerClass Service field.
                     type: string
                   loadBalancerIP:
                     description: LoadBalancerIP Service field.
@@ -12792,6 +11517,16 @@ spec:
                     description: Immediate indicates whether the first backup should
                       be taken immediately after creating the PhysicalBackup.
                     type: boolean
+                  onDemand:
+                    description: |-
+                      OnDemand is an identifier used to trigger an on-demand backup.
+                      If the identifier is different than the one tracked under status.lastScheduleOnDemand, a new physical backup will be triggered.
+                    type: string
+                  onPrimaryChange:
+                    description: OnPrimaryChange indicates whether a PhysicalBackup
+                      should be scheduled when the referred MariaDB has changed primary
+                      Pod.
+                    type: boolean
                   suspend:
                     default: false
                     description: Suspend defines whether the schedule is active or
@@ -13013,6 +11748,67 @@ spec:
               storage:
                 description: Storage defines the final storage for backups.
                 properties:
+                  azureBlob:
+                    description: AzureBlob defines the configuration to store backups
+                      in a AzureBlob compatible storage.
+                    properties:
+                      containerName:
+                        description: ContainerName is the name of the storage container.
+                        type: string
+                      prefix:
+                        description: 'Prefix indicates a folder/subfolder in the container.
+                          For example: mariadb/ or mariadb/backups. A trailing slash
+                          ''/'' is added if not provided.'
+                        type: string
+                      serviceURL:
+                        description: 'ServiceURL is the full URL for connecting to
+                          Azure, usually in the form: http(s)://<account>.blob.core.windows.net/.'
+                        type: string
+                      storageAccountKey:
+                        description: StorageAccountKey is a reference to a Secret
+                          key containing the Azure Blob Storage Storage account Key.
+                          Pairs with StorageAccountKey for static credential authentication
+                        properties:
+                          key:
+                            type: string
+                          name:
+                            default: ""
+                            type: string
+                        required:
+                        - key
+                        type: object
+                        x-kubernetes-map-type: atomic
+                      storageAccountName:
+                        description: StorageAccountName is the name of the storage
+                          account. Pairs with StorageAccountKey for static credential
+                          authentication
+                        type: string
+                      tls:
+                        description: TLS provides the configuration required to establish
+                          TLS connections with Azure Blob Storage.
+                        properties:
+                          caSecretKeyRef:
+                            description: |-
+                              CASecretKeyRef is a reference to a Secret key containing a CA bundle in PEM format used to establish TLS connections with S3.
+                              By default, the system trust chain will be used, but you can use this field to add more CAs to the bundle.
+                            properties:
+                              key:
+                                type: string
+                              name:
+                                default: ""
+                                type: string
+                            required:
+                            - key
+                            type: object
+                            x-kubernetes-map-type: atomic
+                          enabled:
+                            description: Enabled is a flag to enable TLS.
+                            type: boolean
+                        type: object
+                    required:
+                    - containerName
+                    - serviceURL
+                    type: object
                   persistentVolumeClaim:
                     description: PersistentVolumeClaim is a Kubernetes PVC specification.
                     properties:
@@ -13434,10 +12230,21 @@ spec:
                   - type
                   type: object
                 type: array
+              currentMariaDBPrimaryPodIndex:
+                description: CurrentMariaDBPrimaryPodIndex is the current primary
+                  Pod index of the MariaDB.
+                type: integer
               lastScheduleCheckTime:
                 description: LastScheduleCheckTime is the last time that the schedule
                   was checked.
                 format: date-time
+                type: string
+              lastScheduleOnDemand:
+                description: LastScheduleOnDemand is the last on-demand schedule identifier.
+                type: string
+              lastScheduleOnPrimaryChange:
+                description: LastScheduleOnPrimaryChange is the last on primary change
+                  schedule identifier.
                 type: string
               lastScheduleTime:
                 description: LastScheduleTime is the last time that a backup was scheduled.
@@ -13447,6 +12254,309 @@ spec:
                 description: NextScheduleTime is the next time that a backup will
                   be scheduled.
                 format: date-time
+                type: string
+            type: object
+        type: object
+    served: true
+    storage: true
+    subresources:
+      status: {}
+---
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  annotations:
+    controller-gen.kubebuilder.io/version: v0.20.0
+  name: pointintimerecoveries.enterprise.mariadb.com
+spec:
+  group: enterprise.mariadb.com
+  names:
+    kind: PointInTimeRecovery
+    listKind: PointInTimeRecoveryList
+    plural: pointintimerecoveries
+    shortNames:
+    - pitr
+    singular: pointintimerecovery
+  scope: Namespaced
+  versions:
+  - additionalPrinterColumns:
+    - jsonPath: .spec.physicalBackupRef.name
+      name: Physical Backup
+      type: string
+    - jsonPath: .status.lastRecoverableTime
+      name: Last Recoverable Time
+      type: string
+    - jsonPath: .spec.strictMode
+      name: Strict Mode
+      type: boolean
+    - jsonPath: .metadata.creationTimestamp
+      name: Age
+      type: date
+    name: v1alpha1
+    schema:
+      openAPIV3Schema:
+        description: PointInTimeRecovery is the Schema for the pointintimerecoveries
+          API. It contains binlog archival and point-in-time restoration settings.
+        properties:
+          apiVersion:
+            description: |-
+              APIVersion defines the versioned schema of this representation of an object.
+              Servers should convert recognized schemas to the latest internal value, and
+              may reject unrecognized values.
+              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
+            type: string
+          kind:
+            description: |-
+              Kind is a string value representing the REST resource this object represents.
+              Servers may infer this from the endpoint the client submits requests to.
+              Cannot be updated.
+              In CamelCase.
+              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+            type: string
+          metadata:
+            type: object
+          spec:
+            description: PointInTimeRecoverySpec defines the desired state of PointInTimeRecovery.
+              It contains binlog archive and point-in-time restoration settings.
+            properties:
+              archiveInterval:
+                default: 10m
+                description: |-
+                  ArchiveInterval defines the time interval at which the binary logs will be archived.
+                  It defaults to 10 minutes.
+                type: string
+                x-kubernetes-validations:
+                - message: ArchiveInterval must be greater than zero
+                  rule: self != '0s' && self != '0m'
+              archiveTimeout:
+                default: 1h
+                description: |-
+                  ArchiveTimeout defines the maximum duration for the binary log archival.
+                  If this duration is exceeded, the sidecar agent will log an error and it will be retried in the next archive cycle.
+                  It defaults to 1 hour.
+                type: string
+              compression:
+                description: |-
+                  Compression algorithm to be used for compressing the binary logs.
+                  This field is immutable, it cannot be updated after creation.
+                enum:
+                - none
+                - bzip2
+                - gzip
+                type: string
+              maxParallel:
+                default: 1
+                description: |-
+                  MaxParallel defines the maximum number of parallel workers, both for archiving and restoring the binary logs.
+                  It defaults to 1.
+                format: int32
+                minimum: 1
+                type: integer
+              maxRetention:
+                description: |-
+                  MaxRetention defines the retention policy for binary logs. Binary logs older than this duration will be cleaned up when the archival is completed.
+                  It is not set by default, meaning that old binary logs will not be cleaned up.
+                  This field is immutable, it cannot be updated after creation.
+                type: string
+              physicalBackupRef:
+                description: PhysicalBackupRef is a reference to a PhysicalBackup
+                  object that will be used as base backup.
+                properties:
+                  name:
+                    default: ""
+                    type: string
+                type: object
+              storage:
+                description: PointInTimeRecoveryStorage is the storage where the point
+                  in time recovery data will be stored
+                properties:
+                  azureBlob:
+                    description: AzureBlob is the Azure Blob Storage where the binary
+                      logs will be kept.
+                    properties:
+                      containerName:
+                        description: ContainerName is the name of the storage container.
+                        type: string
+                      prefix:
+                        description: 'Prefix indicates a folder/subfolder in the container.
+                          For example: mariadb/ or mariadb/backups. A trailing slash
+                          ''/'' is added if not provided.'
+                        type: string
+                      serviceURL:
+                        description: 'ServiceURL is the full URL for connecting to
+                          Azure, usually in the form: http(s)://<account>.blob.core.windows.net/.'
+                        type: string
+                      storageAccountKey:
+                        description: StorageAccountKey is a reference to a Secret
+                          key containing the Azure Blob Storage Storage account Key.
+                          Pairs with StorageAccountKey for static credential authentication
+                        properties:
+                          key:
+                            type: string
+                          name:
+                            default: ""
+                            type: string
+                        required:
+                        - key
+                        type: object
+                        x-kubernetes-map-type: atomic
+                      storageAccountName:
+                        description: StorageAccountName is the name of the storage
+                          account. Pairs with StorageAccountKey for static credential
+                          authentication
+                        type: string
+                      tls:
+                        description: TLS provides the configuration required to establish
+                          TLS connections with Azure Blob Storage.
+                        properties:
+                          caSecretKeyRef:
+                            description: |-
+                              CASecretKeyRef is a reference to a Secret key containing a CA bundle in PEM format used to establish TLS connections with S3.
+                              By default, the system trust chain will be used, but you can use this field to add more CAs to the bundle.
+                            properties:
+                              key:
+                                type: string
+                              name:
+                                default: ""
+                                type: string
+                            required:
+                            - key
+                            type: object
+                            x-kubernetes-map-type: atomic
+                          enabled:
+                            description: Enabled is a flag to enable TLS.
+                            type: boolean
+                        type: object
+                    required:
+                    - containerName
+                    - serviceURL
+                    type: object
+                  s3:
+                    description: S3 is the S3-compatible storage where the binary
+                      logs will be kept.
+                    properties:
+                      accessKeyIdSecretKeyRef:
+                        description: AccessKeyIdSecretKeyRef is a reference to a Secret
+                          key containing the S3 access key id.
+                        properties:
+                          key:
+                            type: string
+                          name:
+                            default: ""
+                            type: string
+                        required:
+                        - key
+                        type: object
+                        x-kubernetes-map-type: atomic
+                      bucket:
+                        description: Bucket is the name Name of the bucket to store
+                          backups.
+                        type: string
+                      endpoint:
+                        description: Endpoint is the S3 API endpoint without scheme.
+                        type: string
+                      prefix:
+                        description: 'Prefix indicates a folder/subfolder in the bucket.
+                          For example: mariadb/ or mariadb/backups. A trailing slash
+                          ''/'' is added if not provided.'
+                        type: string
+                      region:
+                        description: Region is the S3 region name to use.
+                        type: string
+                      secretAccessKeySecretKeyRef:
+                        description: AccessKeyIdSecretKeyRef is a reference to a Secret
+                          key containing the S3 secret key.
+                        properties:
+                          key:
+                            type: string
+                          name:
+                            default: ""
+                            type: string
+                        required:
+                        - key
+                        type: object
+                        x-kubernetes-map-type: atomic
+                      sessionTokenSecretKeyRef:
+                        description: SessionTokenSecretKeyRef is a reference to a
+                          Secret key containing the S3 session token.
+                        properties:
+                          key:
+                            type: string
+                          name:
+                            default: ""
+                            type: string
+                        required:
+                        - key
+                        type: object
+                        x-kubernetes-map-type: atomic
+                      ssec:
+                        description: |-
+                          SSEC is a reference to a Secret containing the SSE-C (Server-Side Encryption with Customer-Provided Keys) key.
+                          The secret must contain a 32-byte key (256 bits) in the specified key.
+                          This enables server-side encryption where you provide and manage the encryption key.
+                        properties:
+                          customerKeySecretKeyRef:
+                            description: |-
+                              CustomerKeySecretKeyRef is a reference to a Secret key containing the SSE-C customer-provided encryption key.
+                              The key must be a 32-byte (256-bit) key encoded in base64.
+                            properties:
+                              key:
+                                type: string
+                              name:
+                                default: ""
+                                type: string
+                            required:
+                            - key
+                            type: object
+                            x-kubernetes-map-type: atomic
+                        required:
+                        - customerKeySecretKeyRef
+                        type: object
+                      tls:
+                        description: TLS provides the configuration required to establish
+                          TLS connections with S3.
+                        properties:
+                          caSecretKeyRef:
+                            description: |-
+                              CASecretKeyRef is a reference to a Secret key containing a CA bundle in PEM format used to establish TLS connections with S3.
+                              By default, the system trust chain will be used, but you can use this field to add more CAs to the bundle.
+                            properties:
+                              key:
+                                type: string
+                              name:
+                                default: ""
+                                type: string
+                            required:
+                            - key
+                            type: object
+                            x-kubernetes-map-type: atomic
+                          enabled:
+                            description: Enabled is a flag to enable TLS.
+                            type: boolean
+                        type: object
+                    required:
+                    - bucket
+                    - endpoint
+                    type: object
+                type: object
+              strictMode:
+                description: |-
+                  StrictMode controls the behavior when a point-in-time restoration cannot reach the exact target time:
+                  When enabled: Returns an error and avoids replaying binary logs if target time is not reached.
+                  When disabled (default): Replays available binary logs until the last recoverable time. It logs logs an error if target time is not reached.
+                type: boolean
+            required:
+            - physicalBackupRef
+            - storage
+            type: object
+          status:
+            description: PointInTimeRecoveryStatus represents the current status of
+              the point-in-time-recovery.
+            properties:
+              lastRecoverableTime:
+                description: LastRecoverableTime is the most recent recoverable time
+                  based on the current state of physical backups and archived binary
+                  logs.
                 type: string
             type: object
         type: object

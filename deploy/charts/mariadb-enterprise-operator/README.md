@@ -1,6 +1,6 @@
 # mariadb-enterprise-operator
 
-![Version: 25.10.4](https://img.shields.io/badge/Version-25.10.4-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 25.10.4](https://img.shields.io/badge/AppVersion-25.10.4-informational?style=flat-square)
+![Version: 26.3.0](https://img.shields.io/badge/Version-26.3.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 26.3.0](https://img.shields.io/badge/AppVersion-26.3.0-informational?style=flat-square)
 
 Run and operate MariaDB Enterprise in Kubernetes
 
@@ -22,7 +22,7 @@ Kubernetes: `>=1.26.0-0`
 
 | Repository | Name | Version |
 |------------|------|---------|
-| file://../mariadb-enterprise-operator-crds | mariadb-enterprise-operator-crds | 25.10.4 |
+| file://../mariadb-enterprise-operator-crds | mariadb-enterprise-operator-crds | 26.3.0 |
 
 ## Values
 
@@ -68,8 +68,8 @@ Kubernetes: `>=1.26.0-0`
 | certController.tolerations | list | `[]` | Tolerations to add to cert-controller container |
 | certController.topologySpreadConstraints | list | `[]` | topologySpreadConstraints to add to cert-controller container |
 | clusterName | string | `"cluster.local"` | Cluster DNS name |
-| config.exporterImage | string | `"mariadb/mariadb-prometheus-exporter-ubi:1.1.0"` | Default MariaDB exporter image |
-| config.exporterMaxscaleImage | string | `"mariadb/maxscale-prometheus-exporter-ubi:1.1.0"` | Default MaxScale exporter image |
+| config.exporterImage | string | `"mariadb/mariadb-prometheus-exporter-ubi:1.1.1"` | Default MariaDB exporter image |
+| config.exporterMaxscaleImage | string | `"mariadb/maxscale-prometheus-exporter-ubi:1.1.1"` | Default MaxScale exporter image |
 | config.galeraLibPath | string | `"/usr/lib64/galera/libgalera_enterprise_smm.so"` | Galera Enterprise library path to be used with Galera |
 | config.mariadbDefaultVersion | string | `"11.8"` | Default MariaDB Enterprise version to be used when unable to infer it via image tag |
 | config.mariadbImage | string | `"docker.mariadb.com/enterprise-server:11.8.5-2"` | Default MariaDB Enterprise image |
