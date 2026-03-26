@@ -53,6 +53,7 @@ kubectl get statefulset -o yaml -n "$MARIADB_NAMESPACE" > "${SUPPORT_DIR}/${MARI
 kubectl get pod -o yaml -n "$MARIADB_NAMESPACE" > "${SUPPORT_DIR}/${MARIADB_NAMESPACE}_pods.yaml" 2>/dev/null || echo "  -> No Pods found."
 kubectl get service -o yaml -n "$MARIADB_NAMESPACE" > "${SUPPORT_DIR}/${MARIADB_NAMESPACE}_services.yaml" 2>/dev/null || echo "  -> No Services found."
 kubectl get pvc -o yaml -n "$MARIADB_NAMESPACE" > "${SUPPORT_DIR}/${MARIADB_NAMESPACE}_pvcs.yaml" 2>/dev/null || echo "  -> No PVCs found."
+kubectl get pdb -o yaml -n "$MARIADB_NAMESPACE" > "${SUPPORT_DIR}/${MARIADB_NAMESPACE}_pdbs.yaml" 2>/dev/null || echo "  -> No PodDisruptionBudgets found."
 
 if kubectl get crd volumesnapshots.snapshot.storage.k8s.io &> /dev/null; then
   kubectl get volumesnapshot -o yaml -n "$MARIADB_NAMESPACE" > "${SUPPORT_DIR}/${MARIADB_NAMESPACE}_volumesnapshots.yaml" 2>/dev/null || echo "  -> No VolumeSnapshots found."
