@@ -325,6 +325,6 @@ config:
   # -- Default MaxScale Enterprise image
   maxscaleImage: docker.mariadb.com/maxscale:25.10.1
   # -- Default MariaDB exporter image
-  exporterImage: mariadb/mariadb-prometheus-exporter-ubi:1.1.1
+  exporterImage: mariadb/mariadb-prometheus-exporter-ubi:1.1.0
   # -- Default MaxScale exporter image
-  exporterMaxscaleImage: mariadb/maxscale-prometheus-exporter-ubi:1.1.1
+  exporterMaxscaleImage: mariadb/maxscale-prometheus-exporter-ubi:1.1.0
