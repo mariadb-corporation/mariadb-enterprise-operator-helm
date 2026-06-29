@@ -27,6 +27,10 @@ ha:
   enabled: false
   # -- Number of replicas
   replicas: 3
+# -- Specifies the amount of historic ReplicaSets k8s should keep (see https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#clean-up-policy)
+revisionHistoryLimit: 10
+# -- Set deployment strategy
+strategy: {}
 metrics:
   # -- Enable operator internal metrics. Prometheus must be installed in the cluster
   enabled: false
@@ -136,6 +140,10 @@ webhook:
     enabled: false
     # -- Number of replicas
     replicas: 3
+  # -- Specifies the amount of historic ReplicaSets k8s should keep (see https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#clean-up-policy)
+  revisionHistoryLimit: 10
+  # -- Set deployment strategy
+  strategy: {}
   cert:
     certManager:
       # -- Whether to use cert-manager to issue and rotate the certificate. If set to false, mariadb-enterprise-operator's cert-controller will be used instead.
@@ -243,6 +251,10 @@ certController:
     enabled: false
     # -- Number of replicas
     replicas: 3
+  # -- Specifies the amount of historic ReplicaSets k8s should keep (see https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#clean-up-policy)
+  revisionHistoryLimit: 10
+  # -- Set deployment strategy
+  strategy: {}
   # -- CA certificate lifetime. It must be greater than certLifetime.
   caLifetime: 26280h
   # -- Certificate lifetime.
@@ -319,12 +331,20 @@ config:
   # -- Default MariaDB Enterprise version to be used when unable to infer it via image tag
   mariadbDefaultVersion: "11.8"
   # -- Default MariaDB Enterprise image
-  mariadbImage: docker.mariadb.com/enterprise-server:11.8.5-2
+  mariadbImage:
+    repository: docker.mariadb.com/enterprise-server
+    tag: 11.8.6-3.2
   # -- Default MariaDB Enterprise image name
   mariadbImageName: docker.mariadb.com/enterprise-server
   # -- Default MaxScale Enterprise image
-  maxscaleImage: docker.mariadb.com/maxscale:25.10.1
+  maxscaleImage:
+    repository: docker.mariadb.com/maxscale
+    tag: 25.10.1
   # -- Default MariaDB exporter image
-  exporterImage: mariadb/mariadb-prometheus-exporter-ubi:1.1.0
+  exporterImage:
+    repository: mariadb/mariadb-prometheus-exporter-ubi
+    tag: 1.2.0
   # -- Default MaxScale exporter image
-  exporterMaxscaleImage: mariadb/maxscale-prometheus-exporter-ubi:1.1.0
+  exporterMaxscaleImage:
+    repository: mariadb/maxscale-prometheus-exporter-ubi
+    tag: 1.2.0
