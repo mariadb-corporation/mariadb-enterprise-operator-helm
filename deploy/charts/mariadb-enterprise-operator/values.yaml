@@ -333,13 +333,13 @@ config:
   # -- Default MariaDB Enterprise image
   mariadbImage:
     repository: docker.mariadb.com/enterprise-server
-    tag: 11.8.6-3.2
+    tag: 11.8.8-5
   # -- Default MariaDB Enterprise image name
   mariadbImageName: docker.mariadb.com/enterprise-server
   # -- Default MaxScale Enterprise image
   maxscaleImage:
     repository: docker.mariadb.com/maxscale
-    tag: 25.10.1
+    tag: 25.10.3
   # -- Default MariaDB exporter image
   exporterImage:
     repository: mariadb/mariadb-prometheus-exporter-ubi

@@ -1,6 +1,6 @@
 # mariadb-enterprise-operator
 
-![Version: 26.6.0](https://img.shields.io/badge/Version-26.6.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 26.6.0](https://img.shields.io/badge/AppVersion-26.6.0-informational?style=flat-square)
+![Version: 26.6.1](https://img.shields.io/badge/Version-26.6.1-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 26.6.1](https://img.shields.io/badge/AppVersion-26.6.1-informational?style=flat-square)
 
 Run and operate MariaDB Enterprise in Kubernetes
 
@@ -22,7 +22,7 @@ Kubernetes: `>=1.26.0-0`
 
 | Repository | Name | Version |
 |------------|------|---------|
-| file://../mariadb-enterprise-operator-crds | mariadb-enterprise-operator-crds | 26.6.0 |
+| file://../mariadb-enterprise-operator-crds | mariadb-enterprise-operator-crds | 26.6.1 |
 
 ## Values
 
@@ -74,9 +74,9 @@ Kubernetes: `>=1.26.0-0`
 | config.exporterMaxscaleImage | object | `{"repository":"mariadb/maxscale-prometheus-exporter-ubi","tag":"1.2.0"}` | Default MaxScale exporter image |
 | config.galeraLibPath | string | `"/usr/lib64/galera/libgalera_enterprise_smm.so"` | Galera Enterprise library path to be used with Galera |
 | config.mariadbDefaultVersion | string | `"11.8"` | Default MariaDB Enterprise version to be used when unable to infer it via image tag |
-| config.mariadbImage | object | `{"repository":"docker.mariadb.com/enterprise-server","tag":"11.8.6-3.2"}` | Default MariaDB Enterprise image |
+| config.mariadbImage | object | `{"repository":"docker.mariadb.com/enterprise-server","tag":"11.8.8-5"}` | Default MariaDB Enterprise image |
 | config.mariadbImageName | string | `"docker.mariadb.com/enterprise-server"` | Default MariaDB Enterprise image name |
-| config.maxscaleImage | object | `{"repository":"docker.mariadb.com/maxscale","tag":"25.10.1"}` | Default MaxScale Enterprise image |
+| config.maxscaleImage | object | `{"repository":"docker.mariadb.com/maxscale","tag":"25.10.3"}` | Default MaxScale Enterprise image |
 | crds | object | `{"enabled":false}` | CRDs |
 | crds.enabled | bool | `false` | Whether the helm chart should create and update the CRDs. It is false by default, which implies that the CRDs must be managed independently with the mariadb-enterprise-operator-crds helm chart. **WARNING** This should only be set to true during the initial deployment. If this chart manages the CRDs and is later uninstalled, all MariaDB instances will be DELETED. |
 | currentNamespaceOnly | bool | `false` | Whether the operator should watch CRDs only in its own namespace or not. |

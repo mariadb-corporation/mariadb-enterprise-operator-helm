@@ -9773,6 +9773,15 @@ spec:
               config:
                 description: Config defines the MaxScale configuration.
                 properties:
+                  ephemeral:
+                    description: |-
+                      Ephemeral indicates whether the MaxScale runtime configuration is ephemeral. When enabled, MaxScale does not
+                      persist nor load runtime configuration changes from disk, avoiding potential conflicts with config sync. To keep
+                      a restarting MaxScale Pod self-sufficient, the operator renders config sync as well as the servers and monitor
+                      into the static configuration, so the Pod can bootstrap config sync and pull the runtime configuration (services,
+                      listeners, ...) from the cluster on its own. It only takes effect when MaxScale's high availability is enabled.
+                      Defaults to false
+                    type: boolean
                   params:
                     additionalProperties:
                       type: string
