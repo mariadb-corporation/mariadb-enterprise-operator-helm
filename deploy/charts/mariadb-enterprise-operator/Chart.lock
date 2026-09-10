@@ -1,6 +1,6 @@
 dependencies:
 - name: mariadb-enterprise-operator-crds
   repository: file://../mariadb-enterprise-operator-crds
-  version: 26.6.2
-digest: sha256:134700bf174989ec799f9f0ae6ece97f8b50dd7b89a958a5b5ffafa601ca1443
-generated: "2026-08-28T13:20:02.443818485Z"
+  version: 26.6.3
+digest: sha256:010c18d18d085889a7aabe7269d1d25e2027de61e1e2b2a8be1bc0eb418be52d
+generated: "2026-09-10T09:45:01.938053965Z"
