@@ -1,6 +1,6 @@
 # mariadb-enterprise-operator
 
-![Version: 26.6.3](https://img.shields.io/badge/Version-26.6.3-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 26.6.3](https://img.shields.io/badge/AppVersion-26.6.3-informational?style=flat-square)
+![Version: 26.6.4](https://img.shields.io/badge/Version-26.6.4-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 26.6.4](https://img.shields.io/badge/AppVersion-26.6.4-informational?style=flat-square)
 
 Run and operate MariaDB Enterprise in Kubernetes
 
@@ -22,7 +22,7 @@ Kubernetes: `>=1.26.0-0`
 
 | Repository | Name | Version |
 |------------|------|---------|
-| file://../mariadb-enterprise-operator-crds | mariadb-enterprise-operator-crds | 26.6.3 |
+| file://../mariadb-enterprise-operator-crds | mariadb-enterprise-operator-crds | 26.6.4 |
 
 ## Values
 
@@ -70,13 +70,13 @@ Kubernetes: `>=1.26.0-0`
 | certController.tolerations | list | `[]` | Tolerations to add to cert-controller container |
 | certController.topologySpreadConstraints | list | `[]` | topologySpreadConstraints to add to cert-controller container |
 | clusterName | string | `"cluster.local"` | Cluster DNS name |
-| config.exporterImage | object | `{"repository":"mariadb/mariadb-prometheus-exporter-ubi","tag":"1.2.0"}` | Default MariaDB exporter image |
-| config.exporterMaxscaleImage | object | `{"repository":"mariadb/maxscale-prometheus-exporter-ubi","tag":"1.2.0"}` | Default MaxScale exporter image |
+| config.exporterImage | object | `{"repository":"mariadb/mariadb-prometheus-exporter-ubi","tag":"1.2.1"}` | Default MariaDB exporter image |
+| config.exporterMaxscaleImage | object | `{"repository":"mariadb/maxscale-prometheus-exporter-ubi","tag":"1.2.1"}` | Default MaxScale exporter image |
 | config.galeraLibPath | string | `"/usr/lib64/galera/libgalera_enterprise_smm.so"` | Galera Enterprise library path to be used with Galera |
 | config.mariadbDefaultVersion | string | `"11.8"` | Default MariaDB Enterprise version to be used when unable to infer it via image tag |
 | config.mariadbImage | object | `{"repository":"docker.mariadb.com/enterprise-server","tag":"11.8.8-5"}` | Default MariaDB Enterprise image |
 | config.mariadbImageName | string | `"docker.mariadb.com/enterprise-server"` | Default MariaDB Enterprise image name |
-| config.maxscaleImage | object | `{"repository":"docker.mariadb.com/maxscale","tag":"25.10.3"}` | Default MaxScale Enterprise image |
+| config.maxscaleImage | object | `{"repository":"docker.mariadb.com/maxscale","tag":"25.10.4"}` | Default MaxScale Enterprise image |
 | crds | object | `{"enabled":false}` | CRDs |
 | crds.enabled | bool | `false` | Whether the helm chart should create and update the CRDs. It is false by default, which implies that the CRDs must be managed independently with the mariadb-enterprise-operator-crds helm chart. **WARNING** This should only be set to true during the initial deployment. If this chart manages the CRDs and is later uninstalled, all MariaDB instances will be DELETED. |
 | currentNamespaceOnly | bool | `false` | Whether the operator should watch CRDs only in its own namespace or not. |

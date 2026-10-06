@@ -339,12 +339,12 @@ config:
   # -- Default MaxScale Enterprise image
   maxscaleImage:
     repository: docker.mariadb.com/maxscale
-    tag: 25.10.3
+    tag: 25.10.4
   # -- Default MariaDB exporter image
   exporterImage:
     repository: mariadb/mariadb-prometheus-exporter-ubi
-    tag: 1.2.0
+    tag: 1.2.1
   # -- Default MaxScale exporter image
   exporterMaxscaleImage:
     repository: mariadb/maxscale-prometheus-exporter-ubi
-    tag: 1.2.0
+    tag: 1.2.1
