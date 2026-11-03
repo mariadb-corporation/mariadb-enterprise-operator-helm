@@ -105,6 +105,10 @@ spec:
                   fieldPath: metadata.namespace
             - name: MARIADB_ENTERPRISE_OPERATOR_SA_PATH
               value: /var/run/secrets/kubernetes.io/serviceaccount/token
+            {{- if .Values.fips.enabled }}
+            - name: GODEBUG
+              value: fips140={{ if .Values.fips.strict }}only{{ else }}on{{ end }}
+            {{- end }}
             {{- with .Values.extraEnv }}
             {{- toYaml . | nindent 12 }}
             {{- end }}

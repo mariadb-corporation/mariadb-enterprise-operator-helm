@@ -21,6 +21,14 @@ logLevel: INFO
 clusterName: cluster.local
 # -- Whether the operator should watch CRDs only in its own namespace or not.
 currentNamespaceOnly: false
+fips:
+  # -- Enable FIPS 140-3 mode for the operator by injecting `GODEBUG=fips140=on`.
+  # The image must be built with a FIPS-capable Go Cryptographic Module (`GOFIPS140`).
+  enabled: false
+  # -- Enable strict FIPS 140-3 mode by injecting `GODEBUG=fips140=only` instead of `fips140=on`,
+  # which additionally panics on all non-FIPS-approved cryptographic algorithms. Requires `fips.enabled`.
+  # This is not generally recommended for production use by the go devs: https://go.dev/doc/security/fips140#the-fips140-godebug-option
+  strict: false
 ha:
   # -- Enable high availability of the controller.
   # If you enable it we recommend to set `affinity` and `pdb`
@@ -329,17 +337,17 @@ config:
   # -- Galera Enterprise library path to be used with Galera
   galeraLibPath: /usr/lib64/galera/libgalera_enterprise_smm.so
   # -- Default MariaDB Enterprise version to be used when unable to infer it via image tag
-  mariadbDefaultVersion: "11.8"
+  mariadbDefaultVersion: "12.3"
   # -- Default MariaDB Enterprise image
   mariadbImage:
     repository: docker.mariadb.com/enterprise-server
-    tag: 11.8.8-5
+    tag: 12.3.3-1
   # -- Default MariaDB Enterprise image name
   mariadbImageName: docker.mariadb.com/enterprise-server
   # -- Default MaxScale Enterprise image
   maxscaleImage:
     repository: docker.mariadb.com/maxscale
-    tag: 25.10.4
+    tag: 26.10.0
   # -- Default MariaDB exporter image
   exporterImage:
     repository: mariadb/mariadb-prometheus-exporter-ubi
@@ -348,3 +356,10 @@ config:
   exporterMaxscaleImage:
     repository: mariadb/maxscale-prometheus-exporter-ubi
     tag: 1.2.1
+  # -- Reference to the Secret holding the default Enterprise license key. It is used as the
+  # license for MaxScale instances whose version requires one and that do not define
+  # `spec.licenseSecretKeyRef` themselves. If the referenced Secret does not exist, the operator
+  # does not inject a default license, and each MaxScale must define `spec.licenseSecretKeyRef`.
+  enterpriseLicenseKeyRef:
+    name: enterprise-license-key
+    key: license

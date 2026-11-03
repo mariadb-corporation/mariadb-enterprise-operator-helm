@@ -8,6 +8,8 @@ data:
   RELATED_IMAGE_MAXSCALE: "{{ template "image" (tuple .Values.config.maxscaleImage "") }}"
   RELATED_IMAGE_EXPORTER: "{{ template "image" (tuple .Values.config.exporterImage "") }}"
   RELATED_IMAGE_EXPORTER_MAXSCALE: "{{ template "image" (tuple .Values.config.exporterMaxscaleImage "") }}"
+  MARIADB_ENTERPRISE_OPERATOR_LICENSE_SECRET_NAME: "{{ .Values.config.enterpriseLicenseKeyRef.name }}"
+  MARIADB_ENTERPRISE_OPERATOR_LICENSE_SECRET_KEY: "{{ .Values.config.enterpriseLicenseKeyRef.key }}"
 kind: ConfigMap
 metadata:
   creationTimestamp: null
