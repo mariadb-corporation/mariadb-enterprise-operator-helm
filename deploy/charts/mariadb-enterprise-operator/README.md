@@ -1,6 +1,6 @@
 # mariadb-enterprise-operator
 
-![Version: 26.10.0](https://img.shields.io/badge/Version-26.10.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 26.10.0](https://img.shields.io/badge/AppVersion-26.10.0-informational?style=flat-square)
+![Version: 25.10.7](https://img.shields.io/badge/Version-25.10.7-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 25.10.7](https://img.shields.io/badge/AppVersion-25.10.7-informational?style=flat-square)
 
 Run and operate MariaDB Enterprise in Kubernetes
 
@@ -22,7 +22,7 @@ Kubernetes: `>=1.26.0-0`
 
 | Repository | Name | Version |
 |------------|------|---------|
-| file://../mariadb-enterprise-operator-crds | mariadb-enterprise-operator-crds | 26.10.0 |
+| file://../mariadb-enterprise-operator-crds | mariadb-enterprise-operator-crds | 25.10.7 |
 
 ## Values
 
@@ -53,7 +53,6 @@ Kubernetes: `>=1.26.0-0`
 | certController.renewBeforePercentage | int | `33` | How long before the certificate expiration should the renewal process be triggered. For example, if a certificate is valid for 60 minutes, and renewBeforePercentage=25, cert-controller will begin to attempt to renew the certificate 45 minutes after it was issued (i.e. when there are 15 minutes (25%) remaining until the certificate is no longer valid). |
 | certController.requeueDuration | string | `"5m"` | Requeue duration to ensure that certificate gets renewed. |
 | certController.resources | object | `{}` | Resources to add to cert-controller container |
-| certController.revisionHistoryLimit | int | `10` | Specifies the amount of historic ReplicaSets k8s should keep (see https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#clean-up-policy) |
 | certController.securityContext | object | `{}` | Security context to add to cert-controller Pod |
 | certController.serviceAccount.annotations | object | `{}` | Annotations to add to the service account |
 | certController.serviceAccount.automount | bool | `true` | Automounts the service account token in all containers of the Pod |
@@ -66,18 +65,16 @@ Kubernetes: `>=1.26.0-0`
 | certController.serviceMonitor.metricRelabelings | list | `[]` |  |
 | certController.serviceMonitor.relabelings | list | `[]` |  |
 | certController.serviceMonitor.scrapeTimeout | string | `"25s"` | Timeout if metrics can't be retrieved in given time interval |
-| certController.strategy | object | `{}` | Set deployment strategy |
 | certController.tolerations | list | `[]` | Tolerations to add to cert-controller container |
 | certController.topologySpreadConstraints | list | `[]` | topologySpreadConstraints to add to cert-controller container |
 | clusterName | string | `"cluster.local"` | Cluster DNS name |
-| config.enterpriseLicenseKeyRef | object | `{"key":"license","name":"enterprise-license-key"}` | Reference to the Secret holding the default Enterprise license key. It is used as the license for MaxScale instances whose version requires one and that do not define `spec.licenseSecretKeyRef` themselves. If the referenced Secret does not exist, the operator does not inject a default license, and each MaxScale must define `spec.licenseSecretKeyRef`. |
-| config.exporterImage | object | `{"repository":"mariadb/mariadb-prometheus-exporter-ubi","tag":"1.2.1"}` | Default MariaDB exporter image |
-| config.exporterMaxscaleImage | object | `{"repository":"mariadb/maxscale-prometheus-exporter-ubi","tag":"1.2.1"}` | Default MaxScale exporter image |
+| config.exporterImage | string | `"mariadb/mariadb-prometheus-exporter-ubi:1.1.0"` | Default MariaDB exporter image |
+| config.exporterMaxscaleImage | string | `"mariadb/maxscale-prometheus-exporter-ubi:1.1.0"` | Default MaxScale exporter image |
 | config.galeraLibPath | string | `"/usr/lib64/galera/libgalera_enterprise_smm.so"` | Galera Enterprise library path to be used with Galera |
-| config.mariadbDefaultVersion | string | `"12.3"` | Default MariaDB Enterprise version to be used when unable to infer it via image tag |
-| config.mariadbImage | object | `{"repository":"docker.mariadb.com/enterprise-server","tag":"12.3.3-1"}` | Default MariaDB Enterprise image |
+| config.mariadbDefaultVersion | string | `"11.8"` | Default MariaDB Enterprise version to be used when unable to infer it via image tag |
+| config.mariadbImage | string | `"docker.mariadb.com/enterprise-server:11.8.5-2"` | Default MariaDB Enterprise image |
 | config.mariadbImageName | string | `"docker.mariadb.com/enterprise-server"` | Default MariaDB Enterprise image name |
-| config.maxscaleImage | object | `{"repository":"docker.mariadb.com/maxscale","tag":"26.10.0"}` | Default MaxScale Enterprise image |
+| config.maxscaleImage | string | `"docker.mariadb.com/maxscale:25.10.1"` | Default MaxScale Enterprise image |
 | crds | object | `{"enabled":false}` | CRDs |
 | crds.enabled | bool | `false` | Whether the helm chart should create and update the CRDs. It is false by default, which implies that the CRDs must be managed independently with the mariadb-enterprise-operator-crds helm chart. **WARNING** This should only be set to true during the initial deployment. If this chart manages the CRDs and is later uninstalled, all MariaDB instances will be DELETED. |
 | currentNamespaceOnly | bool | `false` | Whether the operator should watch CRDs only in its own namespace or not. |
@@ -86,8 +83,6 @@ Kubernetes: `>=1.26.0-0`
 | extraEnvFrom | list | `[]` | Extra environment variables from preexiting ConfigMap / Secret objects used by the controller using envFrom |
 | extraVolumeMounts | list | `[]` | Extra volumes to mount to the container. |
 | extraVolumes | list | `[]` | Extra volumes to pass to pod. |
-| fips.enabled | bool | `false` | Enable FIPS 140-3 mode for the operator by injecting `GODEBUG=fips140=on`. The image must be built with a FIPS-capable Go Cryptographic Module (`GOFIPS140`). |
-| fips.strict | bool | `false` | Enable strict FIPS 140-3 mode by injecting `GODEBUG=fips140=only` instead of `fips140=on`, which additionally panics on all non-FIPS-approved cryptographic algorithms. Requires `fips.enabled`. This is not generally recommended for production use by the go devs: https://go.dev/doc/security/fips140#the-fips140-godebug-option |
 | fullnameOverride | string | `""` |  |
 | ha.enabled | bool | `false` | Enable high availability of the controller. If you enable it we recommend to set `affinity` and `pdb` |
 | ha.replicas | int | `3` | Number of replicas |
@@ -115,14 +110,12 @@ Kubernetes: `>=1.26.0-0`
 | rbac.aggregation.enabled | bool | `true` | Specifies whether the cluster roles aggregate to view and edit predefinied roles |
 | rbac.enabled | bool | `true` | Specifies whether RBAC resources should be created |
 | resources | object | `{}` | Resources to add to controller container |
-| revisionHistoryLimit | int | `10` | Specifies the amount of historic ReplicaSets k8s should keep (see https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#clean-up-policy) |
 | securityContext | object | `{}` | Security context to add to controller container |
 | serviceAccount.annotations | object | `{}` | Annotations to add to the service account |
 | serviceAccount.automount | bool | `true` | Automounts the service account token in all containers of the Pod |
 | serviceAccount.enabled | bool | `true` | Specifies whether a service account should be created |
 | serviceAccount.extraLabels | object | `{}` | Extra Labels to add to the service account |
 | serviceAccount.name | string | `""` | The name of the service account to use. If not set and enabled is true, a name is generated using the fullname template |
-| strategy | object | `{}` | Set deployment strategy |
 | tolerations | list | `[]` | Tolerations to add to controller Pod |
 | topologySpreadConstraints | list | `[]` | topologySpreadConstraints to add to controller Pod |
 | webhook.affinity | object | `{}` | Affinity to add to webhook Pod |
@@ -158,7 +151,6 @@ Kubernetes: `>=1.26.0-0`
 | webhook.port | int | `9443` | Port to be used by the webhook server |
 | webhook.priorityClassName | string | `""` | priorityClassName to add to webhook Pod |
 | webhook.resources | object | `{}` | Resources to add to webhook container |
-| webhook.revisionHistoryLimit | int | `10` | Specifies the amount of historic ReplicaSets k8s should keep (see https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#clean-up-policy) |
 | webhook.securityContext | object | `{}` | Security context to add to webhook container |
 | webhook.serviceAccount.annotations | object | `{}` | Annotations to add to the service account |
 | webhook.serviceAccount.automount | bool | `true` | Automounts the service account token in all containers of the Pod |
@@ -171,7 +163,6 @@ Kubernetes: `>=1.26.0-0`
 | webhook.serviceMonitor.metricRelabelings | list | `[]` |  |
 | webhook.serviceMonitor.relabelings | list | `[]` |  |
 | webhook.serviceMonitor.scrapeTimeout | string | `"25s"` | Timeout if metrics can't be retrieved in given time interval |
-| webhook.strategy | object | `{}` | Set deployment strategy |
 | webhook.tolerations | list | `[]` | Tolerations to add to webhook Pod |
 | webhook.topologySpreadConstraints | list | `[]` | topologySpreadConstraints to add to webhook Pod |
 

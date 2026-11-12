@@ -8,21 +8,15 @@ spec:
   {{- if .Values.ha.enabled }}
   replicas: {{ .Values.ha.replicas}}
   {{- end }}
-  {{- with .Values.strategy }}
-  strategy:
-    {{- toYaml . | nindent 4 }}
-  {{- end }}
-  revisionHistoryLimit: {{ .Values.revisionHistoryLimit }}
   selector:
     matchLabels:
       {{- include "mariadb-enterprise-operator.selectorLabels" . | nindent 6 }}
   template:
     metadata:
+      {{- with .Values.podAnnotations }}
       annotations:
-        checksum/config: {{ include (print $.Template.BasePath "/operator/configmap.yaml") . | sha256sum }}
-        {{- with .Values.podAnnotations }}
         {{ toYaml . | nindent 8 }}
-        {{- end }}
+      {{- end }}
       labels:
         {{- include "mariadb-enterprise-operator.selectorLabels" . | nindent 8 }}
     spec:
@@ -105,10 +99,6 @@ spec:
                   fieldPath: metadata.namespace
             - name: MARIADB_ENTERPRISE_OPERATOR_SA_PATH
               value: /var/run/secrets/kubernetes.io/serviceaccount/token
-            {{- if .Values.fips.enabled }}
-            - name: GODEBUG
-              value: fips140={{ if .Values.fips.strict }}only{{ else }}on{{ end }}
-            {{- end }}
             {{- with .Values.extraEnv }}
             {{- toYaml . | nindent 12 }}
             {{- end }}
@@ -116,7 +106,7 @@ spec:
           volumeMounts:
           {{- toYaml .Values.extraVolumeMounts | nindent 12 }}
           {{- end }}
-          {{ with .Values.resources }}
+          {{ with .Values.resources }}          
           resources:
             {{ toYaml . | nindent 12 }}
           {{ end }}
