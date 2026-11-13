@@ -1765,6 +1765,70 @@ spec:
               tls:
                 description: TLS defines the PKI to be used with the external MariaDB.
                 properties:
+                  clientAuth:
+                    description: |-
+                      ClientAuth configures TLS client certificate authentication for the operator.
+                      When enabled, the operator bypasses all password-based authentication and exclusively uses the mounted client TLS
+                      certificate to connect. This is required for strict FIPS 140-3 compliance (GODEBUG=fips140=only).
+                      It is immutable: to migrate an existing MariaDB, restore a logical backup (with ignoreGlobalPriv enabled) into a new one.
+                      It requires TLS to be enabled and it is disabled by default.
+                    properties:
+                      enabled:
+                        description: |-
+                          Enabled determines whether TLS client certificate authentication is enabled.
+                          It is disabled by default.
+                        type: boolean
+                      rootTLSRequirements:
+                        description: |-
+                          RootTLSRequirements overrides the TLS requirements that the 'root' user is required to present.
+                          Only Subject and/or Issuer are supported for 'root', as it is bootstrapped by the container entrypoint,
+                          which requires a Subject to be set (expressed in OpenSSL one-line format, e.g. "/CN=root"). When not set,
+                          it defaults to the operator-issued client certificate's common name (Subject) and client CA's common name
+                          (Issuer). Set this when bringing your own client certificate (clientCertSecretRef), CA (clientCASecretRef)
+                          or a cert-manager issuer (clientCertIssuerRef) whose subject/issuer do not follow the default convention.
+                        properties:
+                          issuer:
+                            description: Issuer indicates that the TLS certificate
+                              provided by the user must be issued by a specific issuer.
+                            type: string
+                          ssl:
+                            description: SSL indicates that the user must connect
+                              via TLS.
+                            type: boolean
+                          subject:
+                            description: Subject indicates that the TLS certificate
+                              provided by the user must have a specific subject.
+                            type: string
+                          x509:
+                            description: X509 indicates that the user must provide
+                              a valid x509 certificate to connect.
+                            type: boolean
+                        type: object
+                      tlsRequirements:
+                        description: |-
+                          TLSRequirements overrides the TLS requirements that the other operator-managed users (replication, metrics,
+                          MaxScale...) are required to present. When not set, it defaults to the 'root' user's effective requirement
+                          (see rootTLSRequirements), as these users authenticate with the same client certificate. As these users are
+                          passwordless, a Subject must be set when overriding: SSL-only and X509-only requirements are not supported.
+                        properties:
+                          issuer:
+                            description: Issuer indicates that the TLS certificate
+                              provided by the user must be issued by a specific issuer.
+                            type: string
+                          ssl:
+                            description: SSL indicates that the user must connect
+                              via TLS.
+                            type: boolean
+                          subject:
+                            description: Subject indicates that the TLS certificate
+                              provided by the user must have a specific subject.
+                            type: string
+                          x509:
+                            description: X509 indicates that the user must provide
+                              a valid x509 certificate to connect.
+                            type: boolean
+                        type: object
+                    type: object
                   clientCASecretRef:
                     description: |-
                       ClientCASecretRef is a reference to a Secret containing the client certificate authority keypair. It is used to establish trust and issue client certificates.
@@ -2533,6 +2597,741 @@ spec:
                         type: array
                         x-kubernetes-list-type: atomic
                     type: object
+                type: object
+              arbitrator:
+                description: |-
+                  Arbitrator configures a dataless MariaDB instance that contributes a vote to the high availability topology
+                  without ever holding data or serving traffic. It gives an even sized cluster both split-brain safety and
+                  failover liveness. It is disabled by default.
+                properties:
+                  affinity:
+                    description: |-
+                      Affinity to be used in the arbitrator Pod.
+                      Setting 'antiAffinityEnabled' keeps the arbitrator away from the Nodes running the data nodes, which determines
+                      how much infrastructure failure the topology survives. See the replication docs for guidance.
+                    properties:
+                      antiAffinityEnabled:
+                        description: |-
+                          AntiAffinityEnabled configures PodAntiAffinity so each Pod is scheduled in a different Node, enabling HA.
+                          Make sure you have at least as many Nodes available as the replicas to not end up with unscheduled Pods.
+                        type: boolean
+                      nodeAffinity:
+                        description: 'Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#nodeaffinity-v1-core'
+                        properties:
+                          preferredDuringSchedulingIgnoredDuringExecution:
+                            items:
+                              description: 'Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#preferredschedulingterm-v1-core'
+                              properties:
+                                preference:
+                                  description: 'Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#nodeselectorterm-v1-core'
+                                  properties:
+                                    matchExpressions:
+                                      items:
+                                        description: 'Refer to the Kubernetes docs:
+                                          https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#nodeselectorrequirement-v1-core'
+                                        properties:
+                                          key:
+                                            type: string
+                                          operator:
+                                            description: |-
+                                              A node selector operator is the set of operators that can be used in
+                                              a node selector requirement.
+                                            type: string
+                                          values:
+                                            items:
+                                              type: string
+                                            type: array
+                                            x-kubernetes-list-type: atomic
+                                        required:
+                                        - key
+                                        - operator
+                                        type: object
+                                      type: array
+                                      x-kubernetes-list-type: atomic
+                                    matchFields:
+                                      items:
+                                        description: 'Refer to the Kubernetes docs:
+                                          https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#nodeselectorrequirement-v1-core'
+                                        properties:
+                                          key:
+                                            type: string
+                                          operator:
+                                            description: |-
+                                              A node selector operator is the set of operators that can be used in
+                                              a node selector requirement.
+                                            type: string
+                                          values:
+                                            items:
+                                              type: string
+                                            type: array
+                                            x-kubernetes-list-type: atomic
+                                        required:
+                                        - key
+                                        - operator
+                                        type: object
+                                      type: array
+                                      x-kubernetes-list-type: atomic
+                                  type: object
+                                weight:
+                                  format: int32
+                                  type: integer
+                              required:
+                              - preference
+                              - weight
+                              type: object
+                            type: array
+                            x-kubernetes-list-type: atomic
+                          requiredDuringSchedulingIgnoredDuringExecution:
+                            description: 'Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#nodeselector-v1-core'
+                            properties:
+                              nodeSelectorTerms:
+                                items:
+                                  description: 'Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#nodeselectorterm-v1-core'
+                                  properties:
+                                    matchExpressions:
+                                      items:
+                                        description: 'Refer to the Kubernetes docs:
+                                          https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#nodeselectorrequirement-v1-core'
+                                        properties:
+                                          key:
+                                            type: string
+                                          operator:
+                                            description: |-
+                                              A node selector operator is the set of operators that can be used in
+                                              a node selector requirement.
+                                            type: string
+                                          values:
+                                            items:
+                                              type: string
+                                            type: array
+                                            x-kubernetes-list-type: atomic
+                                        required:
+                                        - key
+                                        - operator
+                                        type: object
+                                      type: array
+                                      x-kubernetes-list-type: atomic
+                                    matchFields:
+                                      items:
+                                        description: 'Refer to the Kubernetes docs:
+                                          https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#nodeselectorrequirement-v1-core'
+                                        properties:
+                                          key:
+                                            type: string
+                                          operator:
+                                            description: |-
+                                              A node selector operator is the set of operators that can be used in
+                                              a node selector requirement.
+                                            type: string
+                                          values:
+                                            items:
+                                              type: string
+                                            type: array
+                                            x-kubernetes-list-type: atomic
+                                        required:
+                                        - key
+                                        - operator
+                                        type: object
+                                      type: array
+                                      x-kubernetes-list-type: atomic
+                                  type: object
+                                type: array
+                                x-kubernetes-list-type: atomic
+                            required:
+                            - nodeSelectorTerms
+                            type: object
+                        type: object
+                      podAntiAffinity:
+                        description: 'Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#podantiaffinity-v1-core.'
+                        properties:
+                          preferredDuringSchedulingIgnoredDuringExecution:
+                            items:
+                              description: 'Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#weightedpodaffinityterm-v1-core.'
+                              properties:
+                                podAffinityTerm:
+                                  description: 'Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#podaffinityterm-v1-core.'
+                                  properties:
+                                    labelSelector:
+                                      description: 'Refer to the Kubernetes docs:
+                                        https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#labelselector-v1-meta'
+                                      properties:
+                                        matchExpressions:
+                                          items:
+                                            description: 'Refer to the Kubernetes
+                                              docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#labelselectorrequirement-v1-meta'
+                                            properties:
+                                              key:
+                                                type: string
+                                              operator:
+                                                description: A label selector operator
+                                                  is the set of operators that can
+                                                  be used in a selector requirement.
+                                                type: string
+                                              values:
+                                                items:
+                                                  type: string
+                                                type: array
+                                                x-kubernetes-list-type: atomic
+                                            required:
+                                            - key
+                                            - operator
+                                            type: object
+                                          type: array
+                                          x-kubernetes-list-type: atomic
+                                        matchLabels:
+                                          additionalProperties:
+                                            type: string
+                                          type: object
+                                      type: object
+                                    topologyKey:
+                                      type: string
+                                  required:
+                                  - topologyKey
+                                  type: object
+                                weight:
+                                  format: int32
+                                  type: integer
+                              required:
+                              - podAffinityTerm
+                              - weight
+                              type: object
+                            type: array
+                            x-kubernetes-list-type: atomic
+                          requiredDuringSchedulingIgnoredDuringExecution:
+                            items:
+                              description: 'Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#podaffinityterm-v1-core.'
+                              properties:
+                                labelSelector:
+                                  description: 'Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#labelselector-v1-meta'
+                                  properties:
+                                    matchExpressions:
+                                      items:
+                                        description: 'Refer to the Kubernetes docs:
+                                          https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#labelselectorrequirement-v1-meta'
+                                        properties:
+                                          key:
+                                            type: string
+                                          operator:
+                                            description: A label selector operator
+                                              is the set of operators that can be
+                                              used in a selector requirement.
+                                            type: string
+                                          values:
+                                            items:
+                                              type: string
+                                            type: array
+                                            x-kubernetes-list-type: atomic
+                                        required:
+                                        - key
+                                        - operator
+                                        type: object
+                                      type: array
+                                      x-kubernetes-list-type: atomic
+                                    matchLabels:
+                                      additionalProperties:
+                                        type: string
+                                      type: object
+                                  type: object
+                                topologyKey:
+                                  type: string
+                              required:
+                              - topologyKey
+                              type: object
+                            type: array
+                            x-kubernetes-list-type: atomic
+                        type: object
+                    type: object
+                  enabled:
+                    description: |-
+                      Enabled is a flag to enable the arbitrator. It requires high availability to be enabled.
+                      Only the replication topology provisions it for now, the Galera arbitrator is not implemented yet.
+                    type: boolean
+                  livenessProbe:
+                    description: LivenessProbe to be used in the arbitrator container.
+                    properties:
+                      exec:
+                        description: 'Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#execaction-v1-core.'
+                        properties:
+                          command:
+                            items:
+                              type: string
+                            type: array
+                            x-kubernetes-list-type: atomic
+                        type: object
+                      failureThreshold:
+                        format: int32
+                        type: integer
+                      httpGet:
+                        description: 'Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#httpgetaction-v1-core.'
+                        properties:
+                          host:
+                            type: string
+                          path:
+                            type: string
+                          port:
+                            anyOf:
+                            - type: integer
+                            - type: string
+                            x-kubernetes-int-or-string: true
+                          scheme:
+                            description: URIScheme identifies the scheme used for
+                              connection to a host for Get actions
+                            type: string
+                        required:
+                        - port
+                        type: object
+                      initialDelaySeconds:
+                        format: int32
+                        type: integer
+                      periodSeconds:
+                        format: int32
+                        type: integer
+                      successThreshold:
+                        format: int32
+                        type: integer
+                      tcpSocket:
+                        description: 'Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#tcpsocketaction-v1-core.'
+                        properties:
+                          host:
+                            type: string
+                          port:
+                            anyOf:
+                            - type: integer
+                            - type: string
+                            x-kubernetes-int-or-string: true
+                        required:
+                        - port
+                        type: object
+                      timeoutSeconds:
+                        format: int32
+                        type: integer
+                    type: object
+                  nodeSelector:
+                    additionalProperties:
+                      type: string
+                    description: NodeSelector to be used in the arbitrator Pod.
+                    type: object
+                  podMetadata:
+                    description: PodMetadata defines extra metadata for the arbitrator
+                      Pod.
+                    properties:
+                      annotations:
+                        additionalProperties:
+                          type: string
+                        description: Annotations to be added to children resources.
+                        type: object
+                      labels:
+                        additionalProperties:
+                          type: string
+                        description: Labels to be added to children resources.
+                        type: object
+                    type: object
+                  podSecurityContext:
+                    description: PodSecurityContext holds pod-level security attributes
+                      for the arbitrator Pod.
+                    properties:
+                      appArmorProfile:
+                        description: AppArmorProfile defines a pod or container's
+                          AppArmor settings.
+                        properties:
+                          localhostProfile:
+                            description: |-
+                              localhostProfile indicates a profile loaded on the node that should be used.
+                              The profile must be preconfigured on the node to work.
+                              Must match the loaded name of the profile.
+                              Must be set if and only if type is "Localhost".
+                            type: string
+                          type:
+                            description: |-
+                              type indicates which kind of AppArmor profile will be applied.
+                              Valid options are:
+                                Localhost - a profile pre-loaded on the node.
+                                RuntimeDefault - the container runtime's default profile.
+                                Unconfined - no AppArmor enforcement.
+                            type: string
+                        required:
+                        - type
+                        type: object
+                      fsGroup:
+                        format: int64
+                        type: integer
+                      fsGroupChangePolicy:
+                        description: |-
+                          PodFSGroupChangePolicy holds policies that will be used for applying fsGroup to a volume
+                          when volume is mounted.
+                        type: string
+                      runAsGroup:
+                        format: int64
+                        type: integer
+                      runAsNonRoot:
+                        type: boolean
+                      runAsUser:
+                        format: int64
+                        type: integer
+                      seLinuxOptions:
+                        description: SELinuxOptions are the labels to be applied to
+                          the container
+                        properties:
+                          level:
+                            description: Level is SELinux level label that applies
+                              to the container.
+                            type: string
+                          role:
+                            description: Role is a SELinux role label that applies
+                              to the container.
+                            type: string
+                          type:
+                            description: Type is a SELinux type label that applies
+                              to the container.
+                            type: string
+                          user:
+                            description: User is a SELinux user label that applies
+                              to the container.
+                            type: string
+                        type: object
+                      seccompProfile:
+                        description: |-
+                          SeccompProfile defines a pod/container's seccomp profile settings.
+                          Only one profile source may be set.
+                        properties:
+                          localhostProfile:
+                            description: |-
+                              localhostProfile indicates a profile defined in a file on the node should be used.
+                              The profile must be preconfigured on the node to work.
+                              Must be a descending path, relative to the kubelet's configured seccomp profile location.
+                              Must be set if type is "Localhost". Must NOT be set for any other type.
+                            type: string
+                          type:
+                            description: |-
+                              type indicates which kind of seccomp profile will be applied.
+                              Valid options are:
+
+                              Localhost - a profile defined in a file on the node should be used.
+                              RuntimeDefault - the container runtime default profile should be used.
+                              Unconfined - no profile should be applied.
+                            type: string
+                        required:
+                        - type
+                        type: object
+                      supplementalGroups:
+                        items:
+                          format: int64
+                          type: integer
+                        type: array
+                        x-kubernetes-list-type: atomic
+                    type: object
+                  priorityClassName:
+                    description: PriorityClassName to be used in the arbitrator Pod.
+                    type: string
+                  readinessProbe:
+                    description: ReadinessProbe to be used in the arbitrator container.
+                    properties:
+                      exec:
+                        description: 'Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#execaction-v1-core.'
+                        properties:
+                          command:
+                            items:
+                              type: string
+                            type: array
+                            x-kubernetes-list-type: atomic
+                        type: object
+                      failureThreshold:
+                        format: int32
+                        type: integer
+                      httpGet:
+                        description: 'Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#httpgetaction-v1-core.'
+                        properties:
+                          host:
+                            type: string
+                          path:
+                            type: string
+                          port:
+                            anyOf:
+                            - type: integer
+                            - type: string
+                            x-kubernetes-int-or-string: true
+                          scheme:
+                            description: URIScheme identifies the scheme used for
+                              connection to a host for Get actions
+                            type: string
+                        required:
+                        - port
+                        type: object
+                      initialDelaySeconds:
+                        format: int32
+                        type: integer
+                      periodSeconds:
+                        format: int32
+                        type: integer
+                      successThreshold:
+                        format: int32
+                        type: integer
+                      tcpSocket:
+                        description: 'Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#tcpsocketaction-v1-core.'
+                        properties:
+                          host:
+                            type: string
+                          port:
+                            anyOf:
+                            - type: integer
+                            - type: string
+                            x-kubernetes-int-or-string: true
+                        required:
+                        - port
+                        type: object
+                      timeoutSeconds:
+                        format: int32
+                        type: integer
+                    type: object
+                  resources:
+                    description: |-
+                      Resources describes the compute resource requirements of the arbitrator container.
+                      The arbitrator serves no traffic, it may be sized much smaller than the data nodes.
+                    properties:
+                      limits:
+                        additionalProperties:
+                          anyOf:
+                          - type: integer
+                          - type: string
+                          pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
+                          x-kubernetes-int-or-string: true
+                        description: ResourceList is a set of (resource name, quantity)
+                          pairs.
+                        type: object
+                      requests:
+                        additionalProperties:
+                          anyOf:
+                          - type: integer
+                          - type: string
+                          pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
+                          x-kubernetes-int-or-string: true
+                        description: ResourceList is a set of (resource name, quantity)
+                          pairs.
+                        type: object
+                    type: object
+                  securityContext:
+                    description: SecurityContext holds security configuration that
+                      will be applied to the arbitrator container.
+                    properties:
+                      allowPrivilegeEscalation:
+                        type: boolean
+                      capabilities:
+                        description: Adds and removes POSIX capabilities from running
+                          containers.
+                        properties:
+                          add:
+                            description: Added capabilities
+                            items:
+                              description: Capability represent POSIX capabilities
+                                type
+                              type: string
+                            type: array
+                            x-kubernetes-list-type: atomic
+                          drop:
+                            description: Removed capabilities
+                            items:
+                              description: Capability represent POSIX capabilities
+                                type
+                              type: string
+                            type: array
+                            x-kubernetes-list-type: atomic
+                        type: object
+                      privileged:
+                        type: boolean
+                      readOnlyRootFilesystem:
+                        type: boolean
+                      runAsGroup:
+                        format: int64
+                        type: integer
+                      runAsNonRoot:
+                        type: boolean
+                      runAsUser:
+                        format: int64
+                        type: integer
+                    type: object
+                  startupProbe:
+                    description: StartupProbe to be used in the arbitrator container.
+                    properties:
+                      exec:
+                        description: 'Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#execaction-v1-core.'
+                        properties:
+                          command:
+                            items:
+                              type: string
+                            type: array
+                            x-kubernetes-list-type: atomic
+                        type: object
+                      failureThreshold:
+                        format: int32
+                        type: integer
+                      httpGet:
+                        description: 'Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#httpgetaction-v1-core.'
+                        properties:
+                          host:
+                            type: string
+                          path:
+                            type: string
+                          port:
+                            anyOf:
+                            - type: integer
+                            - type: string
+                            x-kubernetes-int-or-string: true
+                          scheme:
+                            description: URIScheme identifies the scheme used for
+                              connection to a host for Get actions
+                            type: string
+                        required:
+                        - port
+                        type: object
+                      initialDelaySeconds:
+                        format: int32
+                        type: integer
+                      periodSeconds:
+                        format: int32
+                        type: integer
+                      successThreshold:
+                        format: int32
+                        type: integer
+                      tcpSocket:
+                        description: 'Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#tcpsocketaction-v1-core.'
+                        properties:
+                          host:
+                            type: string
+                          port:
+                            anyOf:
+                            - type: integer
+                            - type: string
+                            x-kubernetes-int-or-string: true
+                        required:
+                        - port
+                        type: object
+                      timeoutSeconds:
+                        format: int32
+                        type: integer
+                    type: object
+                  tolerations:
+                    description: Tolerations to be used in the arbitrator Pod.
+                    items:
+                      description: |-
+                        The pod this Toleration is attached to tolerates any taint that matches
+                        the triple <key,value,effect> using the matching operator <operator>.
+                      properties:
+                        effect:
+                          description: |-
+                            Effect indicates the taint effect to match. Empty means match all taint effects.
+                            When specified, allowed values are NoSchedule, PreferNoSchedule and NoExecute.
+                          type: string
+                        key:
+                          description: |-
+                            Key is the taint key that the toleration applies to. Empty means match all taint keys.
+                            If the key is empty, operator must be Exists; this combination means to match all values and all keys.
+                          type: string
+                        operator:
+                          description: |-
+                            Operator represents a key's relationship to the value.
+                            Valid operators are Exists, Equal, Lt, and Gt. Defaults to Equal.
+                            Exists is equivalent to wildcard for value, so that a pod can
+                            tolerate all taints of a particular category.
+                            Lt and Gt perform numeric comparisons (requires feature gate TaintTolerationComparisonOperators).
+                          type: string
+                        tolerationSeconds:
+                          description: |-
+                            TolerationSeconds represents the period of time the toleration (which must be
+                            of effect NoExecute, otherwise this field is ignored) tolerates the taint. By default,
+                            it is not set, which means tolerate the taint forever (do not evict). Zero and
+                            negative values will be treated as 0 (evict immediately) by the system.
+                          format: int64
+                          type: integer
+                        value:
+                          description: |-
+                            Value is the taint value the toleration matches to.
+                            If the operator is Exists, the value should be empty, otherwise just a regular string.
+                          type: string
+                      type: object
+                    type: array
+                  topologySpreadConstraints:
+                    description: TopologySpreadConstraints to be used in the arbitrator
+                      Pod.
+                    items:
+                      description: 'Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#topologyspreadconstraint-v1-core.'
+                      properties:
+                        labelSelector:
+                          description: |-
+                            A label selector is a label query over a set of resources. The result of matchLabels and
+                            matchExpressions are ANDed. An empty label selector matches all objects. A null
+                            label selector matches no objects.
+                          properties:
+                            matchExpressions:
+                              description: matchExpressions is a list of label selector
+                                requirements. The requirements are ANDed.
+                              items:
+                                description: |-
+                                  A label selector requirement is a selector that contains values, a key, and an operator that
+                                  relates the key and values.
+                                properties:
+                                  key:
+                                    description: key is the label key that the selector
+                                      applies to.
+                                    type: string
+                                  operator:
+                                    description: |-
+                                      operator represents a key's relationship to a set of values.
+                                      Valid operators are In, NotIn, Exists and DoesNotExist.
+                                    type: string
+                                  values:
+                                    description: |-
+                                      values is an array of string values. If the operator is In or NotIn,
+                                      the values array must be non-empty. If the operator is Exists or DoesNotExist,
+                                      the values array must be empty. This array is replaced during a strategic
+                                      merge patch.
+                                    items:
+                                      type: string
+                                    type: array
+                                    x-kubernetes-list-type: atomic
+                                required:
+                                - key
+                                - operator
+                                type: object
+                              type: array
+                              x-kubernetes-list-type: atomic
+                            matchLabels:
+                              additionalProperties:
+                                type: string
+                              description: |-
+                                matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
+                                map is equivalent to an element of matchExpressions, whose key field is "key", the
+                                operator is "In", and the values array contains only "value". The requirements are ANDed.
+                              type: object
+                          type: object
+                          x-kubernetes-map-type: atomic
+                        matchLabelKeys:
+                          items:
+                            type: string
+                          type: array
+                        maxSkew:
+                          format: int32
+                          type: integer
+                        minDomains:
+                          format: int32
+                          type: integer
+                        nodeAffinityPolicy:
+                          description: NodeInclusionPolicy defines the type of node
+                            inclusion policy
+                          type: string
+                        nodeTaintsPolicy:
+                          description: NodeInclusionPolicy defines the type of node
+                            inclusion policy
+                          type: string
+                        topologyKey:
+                          type: string
+                        whenUnsatisfiable:
+                          type: string
+                      required:
+                      - maxSkew
+                      - topologyKey
+                      - whenUnsatisfiable
+                      type: object
+                    type: array
                 type: object
               args:
                 description: Args to be used in the Container.
@@ -8362,6 +9161,70 @@ spec:
               tls:
                 description: TLS defines the PKI to be used with MariaDB.
                 properties:
+                  clientAuth:
+                    description: |-
+                      ClientAuth configures TLS client certificate authentication for the operator.
+                      When enabled, the operator bypasses all password-based authentication and exclusively uses the mounted client TLS
+                      certificate to connect. This is required for strict FIPS 140-3 compliance (GODEBUG=fips140=only).
+                      It is immutable: to migrate an existing MariaDB, restore a logical backup (with ignoreGlobalPriv enabled) into a new one.
+                      It requires TLS to be enabled and it is disabled by default.
+                    properties:
+                      enabled:
+                        description: |-
+                          Enabled determines whether TLS client certificate authentication is enabled.
+                          It is disabled by default.
+                        type: boolean
+                      rootTLSRequirements:
+                        description: |-
+                          RootTLSRequirements overrides the TLS requirements that the 'root' user is required to present.
+                          Only Subject and/or Issuer are supported for 'root', as it is bootstrapped by the container entrypoint,
+                          which requires a Subject to be set (expressed in OpenSSL one-line format, e.g. "/CN=root"). When not set,
+                          it defaults to the operator-issued client certificate's common name (Subject) and client CA's common name
+                          (Issuer). Set this when bringing your own client certificate (clientCertSecretRef), CA (clientCASecretRef)
+                          or a cert-manager issuer (clientCertIssuerRef) whose subject/issuer do not follow the default convention.
+                        properties:
+                          issuer:
+                            description: Issuer indicates that the TLS certificate
+                              provided by the user must be issued by a specific issuer.
+                            type: string
+                          ssl:
+                            description: SSL indicates that the user must connect
+                              via TLS.
+                            type: boolean
+                          subject:
+                            description: Subject indicates that the TLS certificate
+                              provided by the user must have a specific subject.
+                            type: string
+                          x509:
+                            description: X509 indicates that the user must provide
+                              a valid x509 certificate to connect.
+                            type: boolean
+                        type: object
+                      tlsRequirements:
+                        description: |-
+                          TLSRequirements overrides the TLS requirements that the other operator-managed users (replication, metrics,
+                          MaxScale...) are required to present. When not set, it defaults to the 'root' user's effective requirement
+                          (see rootTLSRequirements), as these users authenticate with the same client certificate. As these users are
+                          passwordless, a Subject must be set when overriding: SSL-only and X509-only requirements are not supported.
+                        properties:
+                          issuer:
+                            description: Issuer indicates that the TLS certificate
+                              provided by the user must be issued by a specific issuer.
+                            type: string
+                          ssl:
+                            description: SSL indicates that the user must connect
+                              via TLS.
+                            type: boolean
+                          subject:
+                            description: Subject indicates that the TLS certificate
+                              provided by the user must have a specific subject.
+                            type: string
+                          x509:
+                            description: X509 indicates that the user must provide
+                              a valid x509 certificate to connect.
+                            type: boolean
+                        type: object
+                    type: object
                   clientCASecretRef:
                     description: |-
                       ClientCASecretRef is a reference to a Secret containing the client certificate authority keypair. It is used to establish trust and issue client certificates.
@@ -8683,6 +9546,11 @@ spec:
                     description: |-
                       AutoUpdateDataPlane indicates whether the Galera data-plane version (agent and init containers) should be automatically updated based on the operator version. It defaults to false.
                       Updating the operator will trigger updates on all the MariaDB instances that have this flag set to true. Thus, it is recommended to progressively set this flag after having updated the operator.
+                    type: boolean
+                  mariadbAutoUpgradeEnabled:
+                    description: |-
+                      MariaDBAutoUpgradeEnabled indicates whether the official `mariadb` image entrypoint should run `mariadb-upgrade` on start, by setting `MARIADB_AUTO_UPGRADE=true` in the `mariadb` container env. It defaults to false.
+                      Set this to true before bumping `spec.image` to a new major version, so that the server schema is migrated when the Pods roll. Leaving it set afterwards is safe: `mariadb-upgrade` is a no-op when there is nothing to migrate.
                     type: boolean
                   rollingUpdate:
                     description: RollingUpdate defines parameters for the RollingUpdate
@@ -9782,9 +10650,9 @@ spec:
                     type: object
                     x-kubernetes-map-type: atomic
                   syncUsername:
-                    description: MonitoSyncUsernamerUsername is the user used by MaxScale
-                      config sync to connect to MariaDB server. It is defaulted when
-                      HA is enabled.
+                    description: SyncUsername is the user used by MaxScale config
+                      sync to connect to MariaDB server. It is defaulted when HA is
+                      enabled.
                     type: string
                 type: object
               command:
@@ -10227,6 +11095,21 @@ spec:
                     - LoadBalancer
                     type: string
                 type: object
+              licenseSecretKeyRef:
+                description: |-
+                  LicenseSecretKeyRef is a reference to the Enterprise license key required by MaxScale versions that enforce licensing.
+                  If not provided, and the MaxScale version requires a license, the operator falls back to the license configured
+                  at the operator level (see the `enterpriseLicenseKeyRef` Helm value), if any.
+                properties:
+                  key:
+                    type: string
+                  name:
+                    default: ""
+                    type: string
+                required:
+                - key
+                type: object
+                x-kubernetes-map-type: atomic
               lifecycle:
                 description: Lifecycle are actions that the management system should
                   take in response to container lifecycle events.
@@ -11613,7 +12496,9 @@ spec:
                   verifyPeerCertificate:
                     description: |-
                       VerifyPeerCertificate specifies whether the peer certificate's signature should be validated against the CA.
-                      It is disabled by default.
+                      It is disabled by default, except for the connection to the MariaDB servers when the referenced MariaDB has TLS
+                      client authentication enabled, where it is enabled unless set explicitly.
+                      In listeners, it requires every client to present a certificate.
                     type: boolean
                   verifyPeerHost:
                     description: |-
@@ -15225,6 +16110,18 @@ spec:
                 - Skip
                 - Delete
                 type: string
+              clientCertificate:
+                description: ClientCertificate configures whether the operator issues
+                  a dedicated TLS client certificate for this User.
+                properties:
+                  enabled:
+                    description: |-
+                      Enabled determines whether the operator issues a TLS client certificate for this User, signed by the same
+                      CA used by the referenced MariaDB (spec.tls.clientCASecretRef / spec.tls.clientCertIssuerRef, or the
+                      operator-managed CA otherwise). It requires the referenced MariaDB to have TLS enabled (spec.tls.enabled: true).
+                      It is disabled by default.
+                    type: boolean
+                type: object
               host:
                 description: Host related to the User.
                 maxLength: 255

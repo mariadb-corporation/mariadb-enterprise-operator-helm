@@ -1,6 +1,6 @@
 # mariadb-enterprise-operator
 
-![Version: 26.6.8](https://img.shields.io/badge/Version-26.6.8-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 26.6.8](https://img.shields.io/badge/AppVersion-26.6.8-informational?style=flat-square)
+![Version: 26.10.1](https://img.shields.io/badge/Version-26.10.1-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 26.10.1](https://img.shields.io/badge/AppVersion-26.10.1-informational?style=flat-square)
 
 Run and operate MariaDB Enterprise in Kubernetes
 
@@ -22,7 +22,7 @@ Kubernetes: `>=1.26.0-0`
 
 | Repository | Name | Version |
 |------------|------|---------|
-| file://../mariadb-enterprise-operator-crds | mariadb-enterprise-operator-crds | 26.6.8 |
+| file://../mariadb-enterprise-operator-crds | mariadb-enterprise-operator-crds | 26.10.1 |
 
 ## Values
 
@@ -70,13 +70,14 @@ Kubernetes: `>=1.26.0-0`
 | certController.tolerations | list | `[]` | Tolerations to add to cert-controller container |
 | certController.topologySpreadConstraints | list | `[]` | topologySpreadConstraints to add to cert-controller container |
 | clusterName | string | `"cluster.local"` | Cluster DNS name |
+| config.enterpriseLicenseKeyRef | object | `{"key":"license","name":"enterprise-license-key"}` | Reference to the Secret holding the default Enterprise license key. It is used as the license for MaxScale instances whose version requires one and that do not define `spec.licenseSecretKeyRef` themselves. If the referenced Secret does not exist, the operator does not inject a default license, and each MaxScale must define `spec.licenseSecretKeyRef`. |
 | config.exporterImage | object | `{"repository":"mariadb/mariadb-prometheus-exporter-ubi","tag":"1.2.1"}` | Default MariaDB exporter image |
 | config.exporterMaxscaleImage | object | `{"repository":"mariadb/maxscale-prometheus-exporter-ubi","tag":"1.2.1"}` | Default MaxScale exporter image |
 | config.galeraLibPath | string | `"/usr/lib64/galera/libgalera_enterprise_smm.so"` | Galera Enterprise library path to be used with Galera |
-| config.mariadbDefaultVersion | string | `"11.8"` | Default MariaDB Enterprise version to be used when unable to infer it via image tag |
-| config.mariadbImage | object | `{"repository":"docker.mariadb.com/enterprise-server","tag":"11.8.8-5"}` | Default MariaDB Enterprise image |
+| config.mariadbDefaultVersion | string | `"12.3"` | Default MariaDB Enterprise version to be used when unable to infer it via image tag |
+| config.mariadbImage | object | `{"repository":"docker.mariadb.com/enterprise-server","tag":"12.3.3-1"}` | Default MariaDB Enterprise image |
 | config.mariadbImageName | string | `"docker.mariadb.com/enterprise-server"` | Default MariaDB Enterprise image name |
-| config.maxscaleImage | object | `{"repository":"docker.mariadb.com/maxscale","tag":"25.10.4"}` | Default MaxScale Enterprise image |
+| config.maxscaleImage | object | `{"repository":"docker.mariadb.com/maxscale","tag":"26.10.0"}` | Default MaxScale Enterprise image |
 | crds | object | `{"enabled":false}` | CRDs |
 | crds.enabled | bool | `false` | Whether the helm chart should create and update the CRDs. It is false by default, which implies that the CRDs must be managed independently with the mariadb-enterprise-operator-crds helm chart. **WARNING** This should only be set to true during the initial deployment. If this chart manages the CRDs and is later uninstalled, all MariaDB instances will be DELETED. |
 | currentNamespaceOnly | bool | `false` | Whether the operator should watch CRDs only in its own namespace or not. |
@@ -85,6 +86,8 @@ Kubernetes: `>=1.26.0-0`
 | extraEnvFrom | list | `[]` | Extra environment variables from preexiting ConfigMap / Secret objects used by the controller using envFrom |
 | extraVolumeMounts | list | `[]` | Extra volumes to mount to the container. |
 | extraVolumes | list | `[]` | Extra volumes to pass to pod. |
+| fips.enabled | bool | `false` | Enable FIPS 140-3 mode for the operator by injecting `GODEBUG=fips140=on`. The image must be built with a FIPS-capable Go Cryptographic Module (`GOFIPS140`). |
+| fips.strict | bool | `false` | Enable strict FIPS 140-3 mode by injecting `GODEBUG=fips140=only` instead of `fips140=on`, which additionally panics on all non-FIPS-approved cryptographic algorithms. Requires `fips.enabled`. This is not generally recommended for production use by the go devs: https://go.dev/doc/security/fips140#the-fips140-godebug-option |
 | fullnameOverride | string | `""` |  |
 | ha.enabled | bool | `false` | Enable high availability of the controller. If you enable it we recommend to set `affinity` and `pdb` |
 | ha.replicas | int | `3` | Number of replicas |
