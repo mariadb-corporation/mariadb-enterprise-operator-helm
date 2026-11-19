@@ -351,11 +351,11 @@ config:
   # -- Default MariaDB exporter image
   exporterImage:
     repository: mariadb/mariadb-prometheus-exporter-ubi
-    tag: 1.2.1
+    tag: 1.2.2
   # -- Default MaxScale exporter image
   exporterMaxscaleImage:
     repository: mariadb/maxscale-prometheus-exporter-ubi
-    tag: 1.2.1
+    tag: 1.2.3
   # -- Reference to the Secret holding the default Enterprise license key. It is used as the
   # license for MaxScale instances whose version requires one and that do not define
   # `spec.licenseSecretKeyRef` themselves. If the referenced Secret does not exist, the operator

@@ -1,6 +1,6 @@
 # mariadb-enterprise-operator
 
-![Version: 26.10.1](https://img.shields.io/badge/Version-26.10.1-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 26.10.1](https://img.shields.io/badge/AppVersion-26.10.1-informational?style=flat-square)
+![Version: 26.10.2](https://img.shields.io/badge/Version-26.10.2-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 26.10.2](https://img.shields.io/badge/AppVersion-26.10.2-informational?style=flat-square)
 
 Run and operate MariaDB Enterprise in Kubernetes
 
@@ -22,7 +22,7 @@ Kubernetes: `>=1.26.0-0`
 
 | Repository | Name | Version |
 |------------|------|---------|
-| file://../mariadb-enterprise-operator-crds | mariadb-enterprise-operator-crds | 26.10.1 |
+| file://../mariadb-enterprise-operator-crds | mariadb-enterprise-operator-crds | 26.10.2 |
 
 ## Values
 
@@ -71,8 +71,8 @@ Kubernetes: `>=1.26.0-0`
 | certController.topologySpreadConstraints | list | `[]` | topologySpreadConstraints to add to cert-controller container |
 | clusterName | string | `"cluster.local"` | Cluster DNS name |
 | config.enterpriseLicenseKeyRef | object | `{"key":"license","name":"enterprise-license-key"}` | Reference to the Secret holding the default Enterprise license key. It is used as the license for MaxScale instances whose version requires one and that do not define `spec.licenseSecretKeyRef` themselves. If the referenced Secret does not exist, the operator does not inject a default license, and each MaxScale must define `spec.licenseSecretKeyRef`. |
-| config.exporterImage | object | `{"repository":"mariadb/mariadb-prometheus-exporter-ubi","tag":"1.2.1"}` | Default MariaDB exporter image |
-| config.exporterMaxscaleImage | object | `{"repository":"mariadb/maxscale-prometheus-exporter-ubi","tag":"1.2.1"}` | Default MaxScale exporter image |
+| config.exporterImage | object | `{"repository":"mariadb/mariadb-prometheus-exporter-ubi","tag":"1.2.2"}` | Default MariaDB exporter image |
+| config.exporterMaxscaleImage | object | `{"repository":"mariadb/maxscale-prometheus-exporter-ubi","tag":"1.2.3"}` | Default MaxScale exporter image |
 | config.galeraLibPath | string | `"/usr/lib64/galera/libgalera_enterprise_smm.so"` | Galera Enterprise library path to be used with Galera |
 | config.mariadbDefaultVersion | string | `"12.3"` | Default MariaDB Enterprise version to be used when unable to infer it via image tag |
 | config.mariadbImage | object | `{"repository":"docker.mariadb.com/enterprise-server","tag":"12.3.3-1"}` | Default MariaDB Enterprise image |
