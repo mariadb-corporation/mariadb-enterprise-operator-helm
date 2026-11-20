@@ -61,7 +61,6 @@ rules:
   - services
   verbs:
   - create
-  - delete
   - list
   - patch
   - watch
